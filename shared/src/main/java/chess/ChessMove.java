@@ -12,11 +12,16 @@ public class ChessMove {
     private ChessPosition endPosition;
     private ChessPiece.PieceType promotionPiece;
 
+    public ChessMove(ChessPosition startPosition, ChessPosition endPosition) {
+        this.setStartPosition(startPosition);
+        this.setEndPosition(endPosition);
+        this.setPromotionPiece(null);
+    }
+
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.promotionPiece = promotionPiece;
+        this(startPosition, endPosition);
+        this.setPromotionPiece(promotionPiece);
     }
 
     /**
@@ -54,12 +59,46 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        throw new RuntimeException("Not implemented");
+        return promotionPiece;
     }
 
     public void setPromotionPiece(ChessPiece.PieceType promotionPiece) {
         this.promotionPiece = promotionPiece;
     }
 
+    @Override
+    public int hashCode() {
+        if (promotionPiece == null) {
+            return (startPosition.hashCode() * endPosition.hashCode());
+        } else {
+            return (startPosition.hashCode() * endPosition.hashCode()) ^ promotionPiece.hashCode();
+        }
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        ChessMove m = (ChessMove) obj;
+
+        // return true if the row and column match
+        return (endPosition.equals(m.endPosition) &&
+                startPosition.equals(m.startPosition) &&
+                promotionPiece == m.promotionPiece);
+    }
+
+    @Override
+    public String toString() {
+        return "Start Position: " + startPosition +
+                " End Position: " + endPosition +
+                " Promotion Piece: " + promotionPiece;
+    }
 }
