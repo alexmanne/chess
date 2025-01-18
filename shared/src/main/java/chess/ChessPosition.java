@@ -16,7 +16,6 @@ public class ChessPosition {
     public ChessPosition(int row, int col) {
         this.row = row;
         this.col = col;
-        System.out.println("Hash value: " + this.toString());
     }
 
     /**
