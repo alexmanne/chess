@@ -8,22 +8,43 @@ package chess;
  */
 public class ChessMove {
 
+    private ChessPosition startPosition;
+    private ChessPosition endPosition;
+    private ChessPiece.PieceType promotionPiece;
+
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.promotionPiece = promotionPiece;
     }
 
     /**
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        throw new RuntimeException("Not implemented");
+        return startPosition;
+    }
+
+    /**
+     * Set ChessPosition of starting location
+     */
+    public void setStartPosition(ChessPosition startPosition) {
+        this.startPosition = startPosition;
     }
 
     /**
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-        throw new RuntimeException("Not implemented");
+        return endPosition;
+    }
+
+    /**
+     * Set ChessPosition of ending location
+     */
+    public void setEndPosition(ChessPosition endPosition) {
+        this.endPosition = endPosition;
     }
 
     /**
@@ -35,4 +56,10 @@ public class ChessMove {
     public ChessPiece.PieceType getPromotionPiece() {
         throw new RuntimeException("Not implemented");
     }
+
+    public void setPromotionPiece(ChessPiece.PieceType promotionPiece) {
+        this.promotionPiece = promotionPiece;
+    }
+
+
 }
