@@ -20,9 +20,17 @@ public class Pawn extends ChessPiece {
         ChessPiece myPiece = my_board[my_row][my_col];
         ChessGame.TeamColor myColor = myPiece.getTeamColor();
 
-        // If pieceColor is BLACK, it can only move up
+        // If pieceColor is BLACK, it can only move down
         if (myColor.equals(ChessGame.TeamColor.BLACK)){
+            if (my_row - 1 >= 0) {
+                // If it is empty in front
+                if (my_board[my_row - 1][my_col] == null){
+                    ChessMove newMove = new ChessMove(myPosition, new
+                            ChessPosition(my_row - 1, my_col));
+                    movesAvailable.add(newMove);
+                }
 
+            }
         }
 
         // If pieceColor is WHITE, it can only move up

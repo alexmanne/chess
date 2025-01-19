@@ -88,6 +88,24 @@ public class ChessPiece {
 
     @Override
     public String toString() {
-        return (this.pieceColor.toString() + this.pieceType.toString());
+        if (pieceColor == ChessGame.TeamColor.BLACK) {
+            return switch (pieceType) {
+                case KING -> "k";
+                case QUEEN -> "q";
+                case BISHOP -> "b";
+                case KNIGHT -> "n";
+                case ROOK -> "r";
+                case PAWN -> "p";
+            };
+        } else {
+            return switch (pieceType) {
+                case KING -> "K";
+                case QUEEN -> "Q";
+                case BISHOP -> "B";
+                case KNIGHT -> "N";
+                case ROOK -> "R";
+                case PAWN -> "P";
+            };
+        }
     }
 }
