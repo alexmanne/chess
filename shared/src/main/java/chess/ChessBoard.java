@@ -23,8 +23,34 @@ public class ChessBoard {
     public ChessBoard() {
         board = new ChessPiece[8][8];
         board[0][0] = new Rook(ChessGame.TeamColor.WHITE);
-        board[0][1] = new Knight()
+        board[0][1] = new Knight(ChessGame.TeamColor.WHITE);
+        board[0][2] = new Bishop(ChessGame.TeamColor.WHITE);
+        board[0][3] = new Queen(ChessGame.TeamColor.WHITE);
+        board[0][4] = new King(ChessGame.TeamColor.WHITE);
+        board[0][5] = new Bishop(ChessGame.TeamColor.WHITE);
+        board[0][6] = new Knight(ChessGame.TeamColor.WHITE);
+        board[0][7] = new Rook(ChessGame.TeamColor.WHITE);
+
+        for (int i = 0; i < 8; i++) {
+            board[1][i] = new Pawn(ChessGame.TeamColor.WHITE);
         }
+
+        board[7][0] = new Rook(ChessGame.TeamColor.BLACK);
+        board[7][1] = new Knight(ChessGame.TeamColor.BLACK);
+        board[7][2] = new Bishop(ChessGame.TeamColor.BLACK);
+        board[7][3] = new Queen(ChessGame.TeamColor.BLACK);
+        board[7][4] = new King(ChessGame.TeamColor.BLACK);
+        board[7][5] = new Bishop(ChessGame.TeamColor.BLACK);
+        board[7][6] = new Knight(ChessGame.TeamColor.BLACK);
+        board[7][7] = new Rook(ChessGame.TeamColor.BLACK);
+
+        for (int i = 0; i < 8; i++) {
+            board[6][i] = new Pawn(ChessGame.TeamColor.BLACK);
+        }
+    }
+
+    public ChessPiece[][] getBoard() {
+        return board;
     }
 
     /**
@@ -34,7 +60,9 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        int row = position.getRow() - 1;      // minus one to match 0 index
+        int col = position.getColumn() - 1;   // minus one to match 0 index
+        board[row][col] = piece;
     }
 
     /**
@@ -45,7 +73,9 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        int row = position.getRow() - 1;      // minus one to match 0 index
+        int col = position.getColumn() - 1;   // minus one to match 0 index
+        return board[row][col];
     }
 
     /**
@@ -53,6 +83,31 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[8][8];
+        board[0][0] = new Rook(ChessGame.TeamColor.WHITE);
+        board[0][1] = new Knight(ChessGame.TeamColor.WHITE);
+        board[0][2] = new Bishop(ChessGame.TeamColor.WHITE);
+        board[0][3] = new Queen(ChessGame.TeamColor.WHITE);
+        board[0][4] = new King(ChessGame.TeamColor.WHITE);
+        board[0][5] = new Bishop(ChessGame.TeamColor.WHITE);
+        board[0][6] = new Knight(ChessGame.TeamColor.WHITE);
+        board[0][7] = new Rook(ChessGame.TeamColor.WHITE);
+
+        for (int i = 0; i < 8; i++) {
+            board[1][i] = new Pawn(ChessGame.TeamColor.WHITE);
+        }
+
+        board[7][0] = new Rook(ChessGame.TeamColor.BLACK);
+        board[7][1] = new Knight(ChessGame.TeamColor.BLACK);
+        board[7][2] = new Bishop(ChessGame.TeamColor.BLACK);
+        board[7][3] = new Queen(ChessGame.TeamColor.BLACK);
+        board[7][4] = new King(ChessGame.TeamColor.BLACK);
+        board[7][5] = new Bishop(ChessGame.TeamColor.BLACK);
+        board[7][6] = new Knight(ChessGame.TeamColor.BLACK);
+        board[7][7] = new Rook(ChessGame.TeamColor.BLACK);
+
+        for (int i = 0; i < 8; i++) {
+            board[6][i] = new Pawn(ChessGame.TeamColor.BLACK);
+        }
     }
 }

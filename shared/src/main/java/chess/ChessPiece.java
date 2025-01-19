@@ -71,4 +71,23 @@ public class ChessPiece {
             case PAWN -> Pawn.pawnMoves(board, myPosition);
         };
     }
+
+    @Override
+    public int hashCode() {
+        return pieceType.hashCode() * pieceColor.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (obj.getClass() != this.getClass()) return false;
+        ChessPiece p = (ChessPiece) obj;
+        return (this.pieceColor == p.pieceColor && this.pieceType == p.pieceType);
+    }
+
+    @Override
+    public String toString() {
+        return (this.pieceColor.toString() + this.pieceType.toString());
+    }
 }
