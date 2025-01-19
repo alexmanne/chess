@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.*;
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -10,9 +12,19 @@ public class ChessBoard {
 
     private ChessPiece[][] board;
 
+    /**
+     * Create a new chessboard with the BLACK team color on top
+     * and WHITE team color on bottom.
+     * <p>
+     * Note: The structure of the indexing will follow the
+     * structure of a chess board. (0,0) will be in the bottom
+     * left and (7,7) will be in the top right.
+     */
     public ChessBoard() {
         board = new ChessPiece[8][8];
-
+        board[0][0] = new Rook(ChessGame.TeamColor.WHITE);
+        board[0][1] = new Knight()
+        }
     }
 
     /**

@@ -5,7 +5,7 @@ import chess.*;
 import java.util.Collection;
 
 public class Rook extends ChessPiece {
-    public Rook(ChessGame.TeamColor pieceColor, PieceType type) {
+    public Rook(ChessGame.TeamColor pieceColor) {
         super(pieceColor, PieceType.ROOK);
     }
 
