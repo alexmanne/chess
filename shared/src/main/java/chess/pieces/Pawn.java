@@ -25,8 +25,73 @@ public class Pawn extends ChessPiece {
             if (my_row - 1 >= 0) {
                 // If it is empty in front
                 if (my_board[my_row - 1][my_col] == null){
+                    if (my_row - 1 == 0) {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 1), PieceType.QUEEN);
+                        movesAvailable.add(newMove);
+                        ChessMove newMove1 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 1), PieceType.BISHOP);
+                        movesAvailable.add(newMove1);
+                        ChessMove newMove2 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 1), PieceType.ROOK);
+                        movesAvailable.add(newMove2);
+                        ChessMove newMove3 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 1), PieceType.KNIGHT);
+                        movesAvailable.add(newMove3);
+                    } else {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(my_row, my_col + 1));
+                        movesAvailable.add(newMove);
+                    }
+                }
+                // If the diagonals have an opposing team
+                if (my_col - 1 >= 0 && my_board[my_row - 1][my_col - 1] != null
+                    && my_board[my_row - 1][my_col - 1].getTeamColor() != myColor){
+                    if (my_row - 1 == 0) {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col), PieceType.QUEEN);
+                        movesAvailable.add(newMove);
+                        ChessMove newMove1 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col), PieceType.BISHOP);
+                        movesAvailable.add(newMove1);
+                        ChessMove newMove2 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col), PieceType.ROOK);
+                        movesAvailable.add(newMove2);
+                        ChessMove newMove3 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col), PieceType.KNIGHT);
+                        movesAvailable.add(newMove3);
+                    } else {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(my_row, my_col));
+                        movesAvailable.add(newMove);
+                    }
+                }
+                if (my_col + 1 < 8 && my_board[my_row - 1][my_col + 1] != null
+                        && my_board[my_row - 1][my_col + 1].getTeamColor() != myColor){
+                    if (my_row - 1 == 0) {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 2), PieceType.QUEEN);
+                        movesAvailable.add(newMove);
+                        ChessMove newMove1 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 2), PieceType.BISHOP);
+                        movesAvailable.add(newMove1);
+                        ChessMove newMove2 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 2), PieceType.ROOK);
+                        movesAvailable.add(newMove2);
+                        ChessMove newMove3 = new ChessMove(myPosition, new
+                                ChessPosition(1, my_col + 2), PieceType.KNIGHT);
+                        movesAvailable.add(newMove3);
+                    } else {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(my_row, my_col + 2));
+                        movesAvailable.add(newMove);
+                    }
+                }
+                // If the pawn is in the original spot with two empty spaces
+                if (my_row == 6 && my_board[my_row - 1][my_col] != null
+                    && my_board[my_row - 2][my_col] != null) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - 1, my_col));
+                            ChessPosition(5, my_col + 1));
                     movesAvailable.add(newMove);
                 }
 
@@ -34,7 +99,81 @@ public class Pawn extends ChessPiece {
         }
 
         // If pieceColor is WHITE, it can only move up
-
+        if (myColor.equals(ChessGame.TeamColor.WHITE)){
+            if (my_row + 1 < 8) {
+                // If it is empty in front
+                if (my_board[my_row + 1][my_col] == null){
+                    if (my_row + 1 == 7) {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 1), PieceType.QUEEN);
+                        movesAvailable.add(newMove);
+                        ChessMove newMove1 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 1), PieceType.BISHOP);
+                        movesAvailable.add(newMove1);
+                        ChessMove newMove2 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 1), PieceType.ROOK);
+                        movesAvailable.add(newMove2);
+                        ChessMove newMove3 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 1), PieceType.KNIGHT);
+                        movesAvailable.add(newMove3);
+                    } else {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(my_row + 2, my_col + 1));
+                        movesAvailable.add(newMove);
+                    }
+                }
+                // If the diagonals have an opposing team
+                if (my_col - 1 >= 0 && my_board[my_row + 1][my_col - 1] != null
+                        && my_board[my_row + 1][my_col - 1].getTeamColor() != myColor){
+                    if (my_row + 1 == 7) {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col), PieceType.QUEEN);
+                        movesAvailable.add(newMove);
+                        ChessMove newMove1 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col), PieceType.BISHOP);
+                        movesAvailable.add(newMove1);
+                        ChessMove newMove2 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col), PieceType.ROOK);
+                        movesAvailable.add(newMove2);
+                        ChessMove newMove3 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col), PieceType.KNIGHT);
+                        movesAvailable.add(newMove3);
+                    } else {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(my_row + 2, my_col));
+                        movesAvailable.add(newMove);
+                    }
+                }
+                if (my_col + 1 < 8 && my_board[my_row + 1][my_col + 1] != null
+                        && my_board[my_row + 1][my_col + 1].getTeamColor() != myColor){
+                    if (my_row + 1 == 7) {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 2), PieceType.QUEEN);
+                        movesAvailable.add(newMove);
+                        ChessMove newMove1 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 2), PieceType.BISHOP);
+                        movesAvailable.add(newMove1);
+                        ChessMove newMove2 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 2), PieceType.ROOK);
+                        movesAvailable.add(newMove2);
+                        ChessMove newMove3 = new ChessMove(myPosition, new
+                                ChessPosition(8, my_col + 2), PieceType.KNIGHT);
+                        movesAvailable.add(newMove3);
+                    } else {
+                        ChessMove newMove = new ChessMove(myPosition, new
+                                ChessPosition(my_row + 2, my_col + 2));
+                        movesAvailable.add(newMove);
+                    }
+                }
+                // If the pawn is in the original spot with two empty spaces
+                if (my_row == 1 && my_board[my_row + 1][my_col] != null
+                        && my_board[my_row + 2][my_col] != null) {
+                    ChessMove newMove = new ChessMove(myPosition, new
+                            ChessPosition(4, my_col + 1));
+                    movesAvailable.add(newMove);
+                }
+            }
+        }
         return movesAvailable;
     }
 }

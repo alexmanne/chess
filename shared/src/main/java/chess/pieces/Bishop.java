@@ -23,11 +23,11 @@ public class Bishop extends ChessPiece {
             if ((my_row + i < 8) && (my_col + 1 < 8)) {
                 if (my_board[my_row + i][my_col + i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i, my_col + i));
+                            ChessPosition(my_row + i + 1, my_col + i + 1));
                     movesAvailable.add(newMove);
                 } else if (my_board[my_row + i][my_col + i].getTeamColor() != myColor) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i, my_col + i));
+                            ChessPosition(my_row + i + 1, my_col + i + 1));
                     movesAvailable.add(newMove);
                     break;
                 } else break;
@@ -39,11 +39,11 @@ public class Bishop extends ChessPiece {
             if ((my_row - i >= 0) && (my_col + 1 < 8)) {
                 if (my_board[my_row - i][my_col + i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i, my_col + i));
+                            ChessPosition(my_row - i + 1, my_col + i + 1));
                     movesAvailable.add(newMove);
                 } else if (my_board[my_row - i][my_col + i].getTeamColor() != myColor) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i, my_col + i));
+                            ChessPosition(my_row - i + 1, my_col + i + 1));
                     movesAvailable.add(newMove);
                     break;
                 } else break;
@@ -55,11 +55,11 @@ public class Bishop extends ChessPiece {
             if ((my_row - i >= 0) && (my_col - 1 >= 0)) {
                 if (my_board[my_row - i][my_col - i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i, my_col - i));
+                            ChessPosition(my_row - i + 1, my_col - i + 1));
                     movesAvailable.add(newMove);
                 } else if (my_board[my_row - i][my_col - i].getTeamColor() != myColor) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i, my_col - i));
+                            ChessPosition(my_row - i + 1, my_col - i + 1));
                     movesAvailable.add(newMove);
                     break;
                 } else break;
@@ -71,11 +71,11 @@ public class Bishop extends ChessPiece {
             if ((my_row + i < 8) && (my_col - 1 >= 0)) {
                 if (my_board[my_row + i][my_col - i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i, my_col - i));
+                            ChessPosition(my_row + i + 1, my_col - i + 1));
                     movesAvailable.add(newMove);
                 } else if (my_board[my_row + i][my_col - i].getTeamColor() != myColor) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i, my_col - i));
+                            ChessPosition(my_row + i + 1, my_col - i + 1));
                     movesAvailable.add(newMove);
                     break;
                 } else break;

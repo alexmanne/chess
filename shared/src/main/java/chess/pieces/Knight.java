@@ -23,13 +23,13 @@ public class Knight extends ChessPiece {
             if (my_row + 2 < 8 && (my_board[my_row + 2][my_col + 1] == null
                 || my_board[my_row + 2][my_col + 1].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row + 2, my_col + 1));
+                        ChessPosition(my_row + 3, my_col + 2));
                 movesAvailable.add(newMove);
             }
             if (my_row - 2 >= 0 && (my_board[my_row - 2][my_col + 1] == null
                 || my_board[my_row - 2][my_col + 1].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row - 2, my_col + 1));
+                        ChessPosition(my_row - 1, my_col + 2));
                 movesAvailable.add(newMove);
             }
         }
@@ -39,13 +39,13 @@ public class Knight extends ChessPiece {
             if (my_row + 1 < 8 && (my_board[my_row + 1][my_col + 2] == null
                 || my_board[my_row + 1][my_col + 2].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row + 1, my_col + 2));
+                        ChessPosition(my_row + 2, my_col + 3));
                 movesAvailable.add(newMove);
             }
             if (my_row - 1 >= 0 && (my_board[my_row - 1][my_col + 2] == null
                 || my_board[my_row - 1][my_col + 2].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row - 1, my_col + 2));
+                        ChessPosition(my_row, my_col + 3));
                 movesAvailable.add(newMove);
             }
         }
@@ -55,13 +55,13 @@ public class Knight extends ChessPiece {
             if (my_row + 2 < 8 && (my_board[my_row + 2][my_col - 1] == null
                 || my_board[my_row + 2][my_col - 1].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row + 2, my_col - 1));
+                        ChessPosition(my_row + 3, my_col));
                 movesAvailable.add(newMove);
             }
             if (my_row - 2 >= 0 && (my_board[my_row - 2][my_col - 1] == null
                 || my_board[my_row - 2][my_col - 1].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row - 2, my_col - 1));
+                        ChessPosition(my_row - 1, my_col));
                 movesAvailable.add(newMove);
             }
         }
@@ -71,13 +71,13 @@ public class Knight extends ChessPiece {
             if (my_row + 1 < 8 && (my_board[my_row + 1][my_col - 2] == null
                 || my_board[my_row + 1][my_col - 2].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row + 1, my_col - 2));
+                        ChessPosition(my_row + 2, my_col - 1));
                 movesAvailable.add(newMove);
             }
             if (my_row - 1 >= 0 && (my_board[my_row - 1][my_col - 2] == null
                 || my_board[my_row - 1][my_col - 2].getTeamColor() != myColor)){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row - 1, my_col - 2));
+                        ChessPosition(my_row, my_col - 1));
                 movesAvailable.add(newMove);
             }
         }

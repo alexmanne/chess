@@ -22,20 +22,20 @@ public class King extends ChessPiece {
             if (my_board[my_row - 1][my_col] == null
                     || my_board[my_row - 1][my_col].getTeamColor() != myColor) {
                 ChessMove down = new ChessMove(myPosition, new
-                        ChessPosition(my_row - 1, my_col));
+                        ChessPosition(my_row, my_col + 1));
                 movesAvailable.add(down);
 
                 if (my_col != 0 && (my_board[my_row - 1][my_col - 1] == null
                     || my_board[my_row - 1][my_col - 1].getTeamColor() != myColor)){
                     ChessMove leftDown = new ChessMove(myPosition, new
-                            ChessPosition(my_row - 1, my_col - 1));
+                            ChessPosition(my_row, my_col));
                     movesAvailable.add(leftDown);
                 }
 
                 if (my_col != 7 && (my_board[my_row - 1][my_col + 1] == null
                         || my_board[my_row - 1][my_col + 1].getTeamColor() != myColor)){
                     ChessMove rightDown = new ChessMove(myPosition, new
-                            ChessPosition(my_row - 1, my_col + 1));
+                            ChessPosition(my_row, my_col + 2));
                     movesAvailable.add(rightDown);
                 }
             }
@@ -45,20 +45,20 @@ public class King extends ChessPiece {
             if (my_board[my_row + 1][my_col] == null
                     || my_board[my_row + 1][my_col].getTeamColor() != myColor) {
                 ChessMove up = new ChessMove(myPosition, new
-                        ChessPosition(my_row + 1, my_col));
+                        ChessPosition(my_row + 2, my_col + 1));
                 movesAvailable.add(up);
 
                 if (my_col != 0 && (my_board[my_row + 1][my_col - 1] == null
                         || my_board[my_row + 1][my_col - 1].getTeamColor() != myColor)){
                     ChessMove leftUp = new ChessMove(myPosition, new
-                            ChessPosition(my_row + 1, my_col - 1));
+                            ChessPosition(my_row + 2, my_col));
                     movesAvailable.add(leftUp);
                 }
 
                 if (my_col != 7 && (my_board[my_row + 1][my_col + 1] == null
                         || my_board[my_row + 1][my_col + 1].getTeamColor() != myColor)){
                     ChessMove rightUp = new ChessMove(myPosition, new
-                            ChessPosition(my_row + 1, my_col + 1));
+                            ChessPosition(my_row + 2, my_col + 2));
                     movesAvailable.add(rightUp);
                 }
             }
@@ -67,14 +67,14 @@ public class King extends ChessPiece {
         if (my_col != 0 && (my_board[my_row][my_col - 1] == null
                 || my_board[my_row][my_col - 1].getTeamColor() != myColor)){
             ChessMove left = new ChessMove(myPosition, new
-                    ChessPosition(my_row, my_col - 1));
+                    ChessPosition(my_row + 1, my_col));
             movesAvailable.add(left);
         }
 
         if (my_col != 7 && (my_board[my_row][my_col + 1] == null
                 || my_board[my_row][my_col + 1].getTeamColor() != myColor)){
             ChessMove right = new ChessMove(myPosition, new
-                    ChessPosition(my_row, my_col + 1));
+                    ChessPosition(my_row + 1, my_col + 2));
             movesAvailable.add(right);
         }
 

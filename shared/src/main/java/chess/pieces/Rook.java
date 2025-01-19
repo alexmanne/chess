@@ -22,11 +22,11 @@ public class Rook extends ChessPiece {
         for (int i = my_row; i < 8; i++){
             if (my_board[i][my_col] == null){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(i, my_col));
+                        ChessPosition(i + 1, my_col + 1));
                 movesAvailable.add(newMove);
             } else if (my_board[i][my_col].getTeamColor() != myColor){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(i, my_col));
+                        ChessPosition(i + 1, my_col + 1));
                 movesAvailable.add(newMove);
                 break;
             } else break;
@@ -36,11 +36,11 @@ public class Rook extends ChessPiece {
         for (int i = my_row; i >= 0; i--){
             if (my_board[i][my_col] == null){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(i, my_col));
+                        ChessPosition(i + 1, my_col + 1));
                 movesAvailable.add(newMove);
             } else if (my_board[i][my_col].getTeamColor() != myColor) {
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(i, my_col));
+                        ChessPosition(i + 1, my_col + 1));
                 movesAvailable.add(newMove);
                 break;
             } else break;
@@ -50,11 +50,11 @@ public class Rook extends ChessPiece {
         for (int i = my_col; i < 8; i++){
             if (my_board[my_row][i] == null){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row, i));
+                        ChessPosition(my_row + 1, i + 1));
                 movesAvailable.add(newMove);
             } else if (my_board[my_row][i].getTeamColor() != myColor) {
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row, i));
+                        ChessPosition(my_row + 1, i + 1));
                 movesAvailable.add(newMove);
                 break;
             } else break;
@@ -64,11 +64,11 @@ public class Rook extends ChessPiece {
         for (int i = my_col; i >= 0; i--){
             if (my_board[my_row][i] == null){
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row, i));
+                        ChessPosition(my_row + 1, i + 1));
                 movesAvailable.add(newMove);
             } else if (my_board[my_row][i].getTeamColor() != myColor) {
                 ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(my_row, i));
+                        ChessPosition(my_row + 1, i + 1));
                 movesAvailable.add(newMove);
                 break;
             } else break;
