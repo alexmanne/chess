@@ -54,7 +54,7 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         int positionRow = position.getRow();
         int positionCol = position.getColumn();
-        int indexRow = 8 - positionRow;
+        int indexRow = 8 -positionRow;
         int indexCol = positionCol - 1;
         return board[indexRow][indexCol];
     }

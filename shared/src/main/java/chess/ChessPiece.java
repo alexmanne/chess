@@ -62,6 +62,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        System.out.println(board.toString());
         return switch (pieceType) {
             case KING -> King.kingMoves(board, myPosition);
             case QUEEN -> Queen.queenMoves(board, myPosition);
