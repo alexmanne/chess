@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Queen extends ChessPiece {
-    public Queen(ChessGame.TeamColor pieceColor) {
-        super(pieceColor, PieceType.QUEEN);
-    }
+public class Queen {
+
+    public Queen() {    }
 
     public static Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> bishopMoves = new ArrayList<>(Bishop.bishopMoves(board, myPosition));
