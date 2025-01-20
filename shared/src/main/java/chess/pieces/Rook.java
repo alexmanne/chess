@@ -16,7 +16,7 @@ public class Rook extends ChessPiece {
         int my_row = myPosition.getRow() - 1;        // Minus to match 0 index
         int my_col = myPosition.getColumn() - 1;     // Minus to match 0 index
         ChessPiece[][] my_board = board.getBoard();
-        ChessGame.TeamColor myColor = my_board[my_row][my_row].getTeamColor();
+        ChessGame.TeamColor myColor = my_board[my_row][my_col].getTeamColor();
 
         // Check for rows above my position
         for (int i = my_row; i < 8; i++){

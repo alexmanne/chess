@@ -52,7 +52,7 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        return String.format("Position: (%d,%d)", row, col);
+        return String.format("(%d,%d)", col, row);
     }
 
     @Override

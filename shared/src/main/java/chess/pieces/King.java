@@ -16,7 +16,7 @@ public class King extends ChessPiece {
         int my_row = myPosition.getRow() - 1;        // Minus to match 0 index
         int my_col = myPosition.getColumn() - 1;     // Minus to match 0 index
         ChessPiece[][] my_board = board.getBoard();
-        ChessGame.TeamColor myColor = my_board[my_row][my_row].getTeamColor();
+        ChessGame.TeamColor myColor = my_board[my_row][my_col].getTeamColor();
 
         if (my_row != 0){
             if (my_board[my_row - 1][my_col] == null

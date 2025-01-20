@@ -16,11 +16,14 @@ public class Bishop extends ChessPiece {
         int my_row = myPosition.getRow() - 1;        // Minus to match 0 index
         int my_col = myPosition.getColumn() - 1;     // Minus to match 0 index
         ChessPiece[][] my_board = board.getBoard();
-        ChessGame.TeamColor myColor = my_board[my_row][my_row].getTeamColor();
+        ChessGame.TeamColor myColor = null;
+        if (my_board[my_row][my_col] != null){
+            myColor = my_board[my_row][my_col].getTeamColor();
+        }
 
         // Check for diagonals right and up of my position
-        for (int i = 0; i < 8; i++){
-            if ((my_row + i < 8) && (my_col + 1 < 8)) {
+        for (int i = 1; i < 8; i++){
+            if ((my_row + i < 8) && (my_col + i < 8)) {
                 if (my_board[my_row + i][my_col + i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
                             ChessPosition(my_row + i + 1, my_col + i + 1));
@@ -35,8 +38,8 @@ public class Bishop extends ChessPiece {
         }
 
         // Check for diagonals right and down of my position
-        for (int i = 0; i < 8; i++){
-            if ((my_row - i >= 0) && (my_col + 1 < 8)) {
+        for (int i = 1; i < 8; i++){
+            if ((my_row - i >= 0) && (my_col + i < 8)) {
                 if (my_board[my_row - i][my_col + i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
                             ChessPosition(my_row - i + 1, my_col + i + 1));
@@ -51,8 +54,8 @@ public class Bishop extends ChessPiece {
         }
 
         // Check for diagonals left and down of my position
-        for (int i = 0; i < 8; i++){
-            if ((my_row - i >= 0) && (my_col - 1 >= 0)) {
+        for (int i = 1; i < 8; i++){
+            if ((my_row - i >= 0) && (my_col - i >= 0)) {
                 if (my_board[my_row - i][my_col - i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
                             ChessPosition(my_row - i + 1, my_col - i + 1));
@@ -67,8 +70,8 @@ public class Bishop extends ChessPiece {
         }
 
         // Check for diagonals left and up of my position
-        for (int i = 0; i < 8; i++){
-            if ((my_row + i < 8) && (my_col - 1 >= 0)) {
+        for (int i = 1; i < 8; i++){
+            if ((my_row + i < 8) && (my_col - i >= 0)) {
                 if (my_board[my_row + i][my_col - i] == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
                             ChessPosition(my_row + i + 1, my_col - i + 1));
