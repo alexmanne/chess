@@ -6,31 +6,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Bishop extends ChessPiece {
-    public Bishop(ChessGame.TeamColor pieceColor) {
-        super(pieceColor, PieceType.BISHOP);
-    }
+public class Bishop {
+
+    public Bishop() {    }
 
     public static Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> movesAvailable = new ArrayList<>();
-        int my_row = myPosition.getRow() - 1;        // Minus to match 0 index
-        int my_col = myPosition.getColumn() - 1;     // Minus to match 0 index
-        ChessPiece[][] my_board = board.getBoard();
-        ChessGame.TeamColor myColor = null;
-        if (my_board[my_row][my_col] != null){
-            myColor = my_board[my_row][my_col].getTeamColor();
-        }
+        int myRow = myPosition.getRow();
+        int myCol = myPosition.getColumn();
+        ChessPiece myPiece = board.getPiece(myPosition);
+        ChessGame.TeamColor myColor = myPiece.getTeamColor();
 
         // Check for diagonals right and up of my position
-        for (int i = 1; i < 8; i++){
-            if ((my_row + i < 8) && (my_col + i < 8)) {
-                if (my_board[my_row + i][my_col + i] == null) {
+        for (int i = 1; i < 9; i++){
+            if ((myRow + i < 9) && (myCol + i < 9)) {
+                if (board.getPiece(new ChessPosition(myRow + i, myCol + i)) == null) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i + 1, my_col + i + 1));
+                            ChessPosition(myRow + i, myCol + i));
                     movesAvailable.add(newMove);
-                } else if (my_board[my_row + i][my_col + i].getTeamColor() != myColor) {
+                } else if (board.getPiece(new ChessPosition(myRow + i, myCol + i))
+                                .getTeamColor() != myColor) {
                     ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i + 1, my_col + i + 1));
+                            ChessPosition(myRow + i, myCol + i));
                     movesAvailable.add(newMove);
                     break;
                 } else break;
@@ -38,15 +35,14 @@ public class Bishop extends ChessPiece {
         }
 
         // Check for diagonals right and down of my position
-        for (int i = 1; i < 8; i++){
-            if ((my_row - i >= 0) && (my_col + i < 8)) {
-                if (my_board[my_row - i][my_col + i] == null) {
-                    ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i + 1, my_col + i + 1));
+        for (int i = 1; i < 9; i++){
+            if ((myRow - i > 0) && (myCol + i < 9)) {
+                ChessPosition thatPosition = new ChessPosition(myRow - i, myCol + i);
+                if (board.getPiece(thatPosition) == null) {
+                    ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
-                } else if (my_board[my_row - i][my_col + i].getTeamColor() != myColor) {
-                    ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i + 1, my_col + i + 1));
+                } else if (board.getPiece(thatPosition).getTeamColor() != myColor) {
+                    ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
                     break;
                 } else break;
@@ -54,15 +50,14 @@ public class Bishop extends ChessPiece {
         }
 
         // Check for diagonals left and down of my position
-        for (int i = 1; i < 8; i++){
-            if ((my_row - i >= 0) && (my_col - i >= 0)) {
-                if (my_board[my_row - i][my_col - i] == null) {
-                    ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i + 1, my_col - i + 1));
+        for (int i = 1; i < 9; i++){
+            if ((myRow - i > 0) && (myCol - i > 0)) {
+                ChessPosition thatPosition = new ChessPosition(myRow - i, myCol - i);
+                if (board.getPiece(thatPosition) == null) {
+                    ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
-                } else if (my_board[my_row - i][my_col - i].getTeamColor() != myColor) {
-                    ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row - i + 1, my_col - i + 1));
+                } else if (board.getPiece(thatPosition).getTeamColor() != myColor) {
+                    ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
                     break;
                 } else break;
@@ -70,15 +65,14 @@ public class Bishop extends ChessPiece {
         }
 
         // Check for diagonals left and up of my position
-        for (int i = 1; i < 8; i++){
-            if ((my_row + i < 8) && (my_col - i >= 0)) {
-                if (my_board[my_row + i][my_col - i] == null) {
-                    ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i + 1, my_col - i + 1));
+        for (int i = 1; i < 9; i++){
+            if ((myRow + i < 9) && (myCol - i > 0)) {
+                ChessPosition thatPosition = new ChessPosition(myRow + i, myCol - i);
+                if (board.getPiece(thatPosition) == null) {
+                    ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
-                } else if (my_board[my_row + i][my_col - i].getTeamColor() != myColor) {
-                    ChessMove newMove = new ChessMove(myPosition, new
-                            ChessPosition(my_row + i + 1, my_col - i + 1));
+                } else if (board.getPiece(thatPosition).getTeamColor() != myColor) {
+                    ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
                     break;
                 } else break;

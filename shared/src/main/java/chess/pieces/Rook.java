@@ -8,9 +8,7 @@ import java.util.List;
 
 public class Rook {
 
-
-
-    public Rook(ChessGame.TeamColor pieceColor) {    }
+    public Rook() {    }
 
     public static Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> movesAvailable = new ArrayList<>();
