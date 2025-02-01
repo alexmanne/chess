@@ -10,6 +10,22 @@ public class Pawn {
 
     public Pawn() {   }
 
+    public static void addWithPromotion(List<ChessMove> movesAvailable, ChessPosition startPosition,
+                                        ChessPosition endPosition) {
+        ChessMove newMove = new ChessMove(startPosition, endPosition,
+                ChessPiece.PieceType.QUEEN);
+        movesAvailable.add(newMove);
+        ChessMove newMove1 = new ChessMove(startPosition, endPosition,
+                ChessPiece.PieceType.BISHOP);
+        movesAvailable.add(newMove1);
+        ChessMove newMove2 = new ChessMove(startPosition, endPosition,
+                ChessPiece.PieceType.ROOK);
+        movesAvailable.add(newMove2);
+        ChessMove newMove3 = new ChessMove(startPosition, endPosition,
+                ChessPiece.PieceType.KNIGHT);
+        movesAvailable.add(newMove3);
+    }
+
     public static Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> movesAvailable = new ArrayList<>();
         int myRow = myPosition.getRow();
@@ -23,18 +39,7 @@ public class Pawn {
             // If it is empty in front
             if (board.getPiece(front) == null) {
                 if (myRow - 1 == 1) {
-                    ChessMove newMove = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.QUEEN);
-                    movesAvailable.add(newMove);
-                    ChessMove newMove1 = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.BISHOP);
-                    movesAvailable.add(newMove1);
-                    ChessMove newMove2 = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.ROOK);
-                    movesAvailable.add(newMove2);
-                    ChessMove newMove3 = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.KNIGHT);
-                    movesAvailable.add(newMove3);
+                    addWithPromotion(movesAvailable, myPosition, front);
                 } else {
                     ChessMove newMove = new ChessMove(myPosition, front);
                     movesAvailable.add(newMove);
@@ -56,18 +61,7 @@ public class Pawn {
                 if (board.getPiece(diagLeft) != null
                         && board.getPiece(diagLeft).getTeamColor() != myColor) {
                     if (myRow - 1 == 1) {
-                        ChessMove newMove = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.QUEEN);
-                        movesAvailable.add(newMove);
-                        ChessMove newMove1 = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.BISHOP);
-                        movesAvailable.add(newMove1);
-                        ChessMove newMove2 = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.ROOK);
-                        movesAvailable.add(newMove2);
-                        ChessMove newMove3 = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.KNIGHT);
-                        movesAvailable.add(newMove3);
+                        addWithPromotion(movesAvailable, myPosition, diagLeft);
                     } else {
                         ChessMove newMove = new ChessMove(myPosition, diagLeft);
                         movesAvailable.add(newMove);
@@ -79,18 +73,7 @@ public class Pawn {
                 if (board.getPiece(diagRight) != null
                         && board.getPiece(diagRight).getTeamColor() != myColor) {
                     if (myRow - 1 == 1) {
-                        ChessMove newMove = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.QUEEN);
-                        movesAvailable.add(newMove);
-                        ChessMove newMove1 = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.BISHOP);
-                        movesAvailable.add(newMove1);
-                        ChessMove newMove2 = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.ROOK);
-                        movesAvailable.add(newMove2);
-                        ChessMove newMove3 = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.KNIGHT);
-                        movesAvailable.add(newMove3);
+                        addWithPromotion(movesAvailable, myPosition, diagRight);
                     } else {
                         ChessMove newMove = new ChessMove(myPosition, diagRight);
                         movesAvailable.add(newMove);
@@ -105,18 +88,7 @@ public class Pawn {
             // If it is empty in front
             if (board.getPiece(front) == null) {
                 if (myRow + 1 == 8) {
-                    ChessMove newMove = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.QUEEN);
-                    movesAvailable.add(newMove);
-                    ChessMove newMove1 = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.BISHOP);
-                    movesAvailable.add(newMove1);
-                    ChessMove newMove2 = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.ROOK);
-                    movesAvailable.add(newMove2);
-                    ChessMove newMove3 = new ChessMove(myPosition, front,
-                            ChessPiece.PieceType.KNIGHT);
-                    movesAvailable.add(newMove3);
+                    addWithPromotion(movesAvailable, myPosition, front);
                 } else {
                     ChessMove newMove = new ChessMove(myPosition, front);
                     movesAvailable.add(newMove);
@@ -138,18 +110,7 @@ public class Pawn {
                 if (board.getPiece(diagLeft) != null
                         && board.getPiece(diagLeft).getTeamColor() != myColor) {
                     if (myRow + 1 == 8) {
-                        ChessMove newMove = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.QUEEN);
-                        movesAvailable.add(newMove);
-                        ChessMove newMove1 = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.BISHOP);
-                        movesAvailable.add(newMove1);
-                        ChessMove newMove2 = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.ROOK);
-                        movesAvailable.add(newMove2);
-                        ChessMove newMove3 = new ChessMove(myPosition, diagLeft,
-                                ChessPiece.PieceType.KNIGHT);
-                        movesAvailable.add(newMove3);
+                        addWithPromotion(movesAvailable, myPosition, diagLeft);
                     } else {
                         ChessMove newMove = new ChessMove(myPosition, diagLeft);
                         movesAvailable.add(newMove);
@@ -161,18 +122,7 @@ public class Pawn {
                 if (board.getPiece(diagRight) != null
                         && board.getPiece(diagRight).getTeamColor() != myColor) {
                     if (myRow + 1 == 8) {
-                        ChessMove newMove = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.QUEEN);
-                        movesAvailable.add(newMove);
-                        ChessMove newMove1 = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.BISHOP);
-                        movesAvailable.add(newMove1);
-                        ChessMove newMove2 = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.ROOK);
-                        movesAvailable.add(newMove2);
-                        ChessMove newMove3 = new ChessMove(myPosition, diagRight,
-                                ChessPiece.PieceType.KNIGHT);
-                        movesAvailable.add(newMove3);
+                        addWithPromotion(movesAvailable, myPosition, diagRight);
                     } else {
                         ChessMove newMove = new ChessMove(myPosition, diagRight);
                         movesAvailable.add(newMove);
