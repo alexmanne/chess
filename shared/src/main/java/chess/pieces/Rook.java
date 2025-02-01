@@ -29,6 +29,25 @@ public class Rook {
         return true;
     }
 
+    public static boolean colChecker(ChessBoard board, ChessPosition myPosition,
+                                     Collection<ChessMove> movesAvailable,
+                                     int i, int myRow, ChessGame.TeamColor myColor) {
+        if (board.getPiece(new ChessPosition(myRow, i)) == null){
+            ChessMove newMove = new ChessMove(myPosition, new
+                    ChessPosition(myRow, i));
+            movesAvailable.add(newMove);
+        } else if (board.getPiece(new ChessPosition(myRow, i)).getTeamColor()
+                != myColor) {
+            ChessMove newMove = new ChessMove(myPosition, new
+                    ChessPosition(myRow, i));
+            movesAvailable.add(newMove);
+            return false;
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     public static Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
         List<ChessMove> movesAvailable = new ArrayList<>();
         int myRow = myPosition.getRow();
@@ -57,17 +76,10 @@ public class Rook {
         }
 
         // Check for cols right of my position
+        keepGoing = true;
         for (int i = myCol + 1; i < 9; i++){
-            if (board.getPiece(new ChessPosition(myRow, i)) == null){
-                ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(myRow, i));
-                movesAvailable.add(newMove);
-            } else if (board.getPiece(new ChessPosition(myRow, i)).getTeamColor()
-                            != myColor) {
-                ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(myRow, i));
-                movesAvailable.add(newMove);
-                break;
+            if (keepGoing){
+                keepGoing = colChecker(board, myPosition, movesAvailable, i, myRow, myColor);
             } else {
                 break;
             }
@@ -75,16 +87,8 @@ public class Rook {
 
         // Check for cols left of my position
         for (int i = myCol - 1; i > 0; i--){
-            if (board.getPiece(new ChessPosition(myRow, i)) == null){
-                ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(myRow, i));
-                movesAvailable.add(newMove);
-            } else if (board.getPiece(new ChessPosition(myRow, i)).getTeamColor()
-                            != myColor) {
-                ChessMove newMove = new ChessMove(myPosition, new
-                        ChessPosition(myRow, i));
-                movesAvailable.add(newMove);
-                break;
+            if (keepGoing){
+                keepGoing = colChecker(board, myPosition, movesAvailable, i, myRow, myColor);
             } else {
                 break;
             }
