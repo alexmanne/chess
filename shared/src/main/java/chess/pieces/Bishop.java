@@ -30,8 +30,12 @@ public class Bishop {
                             ChessPosition(myRow + i, myCol + i));
                     movesAvailable.add(newMove);
                     break;
-                } else break;
-            } else break;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
         }
 
         // Check for diagonals right and down of my position
@@ -45,8 +49,12 @@ public class Bishop {
                     ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
                     break;
-                } else break;
-            } else break;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
         }
 
         // Check for diagonals left and down of my position
@@ -60,8 +68,12 @@ public class Bishop {
                     ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
                     break;
-                } else break;
-            } else break;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
         }
 
         // Check for diagonals left and up of my position
@@ -75,8 +87,12 @@ public class Bishop {
                     ChessMove newMove = new ChessMove(myPosition, thatPosition);
                     movesAvailable.add(newMove);
                     break;
-                } else break;
-            } else break;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
         }
 
         return movesAvailable;

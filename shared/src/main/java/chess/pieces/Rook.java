@@ -29,7 +29,9 @@ public class Rook {
                         ChessPosition(i, myCol));
                 movesAvailable.add(newMove);
                 break;
-            } else break;
+            } else {
+                break;
+            }
         }
 
         // Check for rows below my position
@@ -44,7 +46,9 @@ public class Rook {
                         ChessPosition(i, myCol));
                 movesAvailable.add(newMove);
                 break;
-            } else break;
+            } else {
+                break;
+            }
         }
 
         // Check for cols right of my position
@@ -59,7 +63,9 @@ public class Rook {
                         ChessPosition(myRow, i));
                 movesAvailable.add(newMove);
                 break;
-            } else break;
+            } else {
+                break;
+            }
         }
 
         // Check for cols left of my position
@@ -74,7 +80,9 @@ public class Rook {
                         ChessPosition(myRow, i));
                 movesAvailable.add(newMove);
                 break;
-            } else break;
+            } else {
+                break;
+            }
         }
         return movesAvailable;
     }

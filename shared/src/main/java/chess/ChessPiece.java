@@ -62,7 +62,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        System.out.println(board.toString());
         return switch (pieceType) {
             case KING -> King.kingMoves(board, myPosition);
             case QUEEN -> Queen.queenMoves(board, myPosition);
@@ -80,9 +79,15 @@ public class ChessPiece {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (obj.getClass() != this.getClass()) return false;
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
         ChessPiece p = (ChessPiece) obj;
         return (this.pieceColor == p.pieceColor && this.pieceType == p.pieceType);
     }
@@ -97,8 +102,9 @@ public class ChessPiece {
                 case KNIGHT -> "n";
                 case ROOK -> "r";
                 case PAWN -> "p";
+                case null -> "L";
             };
-        } else {
+        } else if (pieceColor == ChessGame.TeamColor.WHITE) {
             return switch (pieceType) {
                 case KING -> "K";
                 case QUEEN -> "Q";
@@ -106,7 +112,10 @@ public class ChessPiece {
                 case KNIGHT -> "N";
                 case ROOK -> "R";
                 case PAWN -> "P";
+                case null -> "L";
             };
+        } else {
+            return "L";
         }
     }
 }

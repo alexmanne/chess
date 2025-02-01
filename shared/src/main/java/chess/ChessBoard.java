@@ -3,6 +3,7 @@ package chess;
 import chess.pieces.*;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -117,10 +118,15 @@ public class ChessBoard {
 
     @Override
     public boolean equals(Object obj) {
-        String bo = this.toString();
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (obj.getClass() != this.getClass()) return false;
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
         ChessBoard b = (ChessBoard) obj;
         return Arrays.deepEquals(board, b.board);
     }
