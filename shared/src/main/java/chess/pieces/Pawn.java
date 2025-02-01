@@ -32,7 +32,6 @@ public class Pawn {
         int myCol = myPosition.getColumn();
         ChessPiece myPiece = board.getPiece(myPosition);
         ChessGame.TeamColor myColor = myPiece.getTeamColor();
-
         // If pieceColor is BLACK, it can only move down
         if (myColor == ChessGame.TeamColor.BLACK && myRow - 1 > 0) {
             ChessPosition front = new ChessPosition(myRow - 1, myCol);
@@ -45,7 +44,6 @@ public class Pawn {
                     movesAvailable.add(newMove);
                 }
             }
-
             // If the pawn is in the original spot with two empty spaces
             if (myRow == 7) {
                 ChessPosition front2 = new ChessPosition(myRow - 2, myCol);
@@ -54,7 +52,6 @@ public class Pawn {
                     movesAvailable.add(newMove);
                 }
             }
-
             // If the diagonals have an opposing team
             if (myCol - 1 > 0) {
                 ChessPosition diagLeft = new ChessPosition(myRow - 1, myCol - 1);
@@ -81,7 +78,6 @@ public class Pawn {
                 }
             }
         }
-
         // If pieceColor is WHITE, it can only move up
         if (myColor == ChessGame.TeamColor.WHITE && myRow + 1 < 9) {
             ChessPosition front = new ChessPosition(myRow + 1, myCol);
@@ -94,7 +90,6 @@ public class Pawn {
                     movesAvailable.add(newMove);
                 }
             }
-
             // If the pawn is in the original spot with two empty spaces
             if (myRow == 2) {
                 ChessPosition front2 = new ChessPosition(myRow + 2, myCol);
@@ -103,7 +98,6 @@ public class Pawn {
                     movesAvailable.add(newMove);
                 }
             }
-
             // If the diagonals have an opposing team
             if (myCol - 1 > 0) {
                 ChessPosition diagLeft = new ChessPosition(myRow + 1, myCol - 1);

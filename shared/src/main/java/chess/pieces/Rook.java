@@ -10,36 +10,17 @@ public class Rook {
 
     public Rook() {    }
 
-    public static boolean rowChecker(ChessBoard board, ChessPosition myPosition,
+    public static boolean moveChecker(ChessBoard board, ChessPosition myPosition,
                                      Collection<ChessMove> movesAvailable,
-                                     int i, int myCol, ChessGame.TeamColor myColor) {
-        if (board.getPiece(new ChessPosition(i, myCol)) == null){
+                                     int myRow, int myCol, ChessGame.TeamColor myColor) {
+        if (board.getPiece(new ChessPosition(myRow, myCol)) == null){
             ChessMove newMove = new ChessMove(myPosition, new
-                    ChessPosition(i, myCol));
+                    ChessPosition(myRow, myCol));
             movesAvailable.add(newMove);
-        } else if (board.getPiece(new ChessPosition(i, myCol)).getTeamColor()
+        } else if (board.getPiece(new ChessPosition(myRow, myCol)).getTeamColor()
                 != myColor){
             ChessMove newMove = new ChessMove(myPosition, new
-                    ChessPosition(i, myCol));
-            movesAvailable.add(newMove);
-            return false;
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean colChecker(ChessBoard board, ChessPosition myPosition,
-                                     Collection<ChessMove> movesAvailable,
-                                     int i, int myRow, ChessGame.TeamColor myColor) {
-        if (board.getPiece(new ChessPosition(myRow, i)) == null){
-            ChessMove newMove = new ChessMove(myPosition, new
-                    ChessPosition(myRow, i));
-            movesAvailable.add(newMove);
-        } else if (board.getPiece(new ChessPosition(myRow, i)).getTeamColor()
-                != myColor) {
-            ChessMove newMove = new ChessMove(myPosition, new
-                    ChessPosition(myRow, i));
+                    ChessPosition(myRow, myCol));
             movesAvailable.add(newMove);
             return false;
         } else {
@@ -59,7 +40,7 @@ public class Rook {
         boolean keepGoing = true;
         for (int i = myRow + 1; i < 9; i++){
             if (keepGoing){
-                keepGoing = rowChecker(board, myPosition, movesAvailable, i, myCol, myColor);
+                keepGoing = moveChecker(board, myPosition, movesAvailable, i, myCol, myColor);
             } else {
                 break;
             }
@@ -69,7 +50,7 @@ public class Rook {
         keepGoing = true;
         for (int i = myRow - 1; i > 0; i--){
             if (keepGoing){
-                keepGoing = rowChecker(board, myPosition, movesAvailable, i, myCol, myColor);
+                keepGoing = moveChecker(board, myPosition, movesAvailable, i, myCol, myColor);
             } else {
                 break;
             }
@@ -79,7 +60,7 @@ public class Rook {
         keepGoing = true;
         for (int i = myCol + 1; i < 9; i++){
             if (keepGoing){
-                keepGoing = colChecker(board, myPosition, movesAvailable, i, myRow, myColor);
+                keepGoing = moveChecker(board, myPosition, movesAvailable, myRow, i, myColor);
             } else {
                 break;
             }
@@ -88,7 +69,7 @@ public class Rook {
         // Check for cols left of my position
         for (int i = myCol - 1; i > 0; i--){
             if (keepGoing){
-                keepGoing = colChecker(board, myPosition, movesAvailable, i, myRow, myColor);
+                keepGoing = moveChecker(board, myPosition, movesAvailable, myRow, i, myColor);
             } else {
                 break;
             }
