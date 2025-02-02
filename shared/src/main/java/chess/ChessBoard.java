@@ -146,7 +146,18 @@ public class ChessBoard {
 
     public ChessBoard copy(ChessBoard oldBoard) {
         ChessBoard newBoard = new ChessBoard();
-        newBoard.board = oldBoard.board;
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition curPosition = new ChessPosition(i, j);
+                ChessPiece oldPiece = oldBoard.getPiece(curPosition);
+                if (oldPiece == null) {
+                    newBoard.addPiece(curPosition, null);
+                } else {
+                    ChessPiece newPiece = oldPiece.copy(oldPiece);
+                    newBoard.addPiece(curPosition, newPiece);
+                }
+            }
+        }
         return newBoard;
     }
 }

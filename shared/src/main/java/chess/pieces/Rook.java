@@ -67,6 +67,7 @@ public class Rook {
         }
 
         // Check for cols left of my position
+        keepGoing = true;
         for (int i = myCol - 1; i > 0; i--){
             if (keepGoing){
                 keepGoing = moveChecker(board, myPosition, movesAvailable, myRow, i, myColor);

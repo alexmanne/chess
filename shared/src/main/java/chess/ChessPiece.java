@@ -118,4 +118,10 @@ public class ChessPiece {
             return "L";
         }
     }
+
+    public ChessPiece copy(ChessPiece oldPiece) {
+        ChessGame.TeamColor oldColor = oldPiece.getTeamColor();
+        PieceType oldPieceType = oldPiece.getPieceType();
+        return new ChessPiece(oldColor, oldPieceType);
+    }
 }
