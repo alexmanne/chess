@@ -73,6 +73,28 @@ public class ChessGame {
     }
 
     /**
+     * Gets a valid moves for a team
+     *
+     * @param teamColor the team to get valid moves for
+     * @return Set of valid moves for requested piece
+     */
+    public Collection<ChessMove> validTeamMoves(TeamColor teamColor) {
+        Collection<ChessMove> allTeamMoves = new ArrayList<>();
+        for (int myRow = 1; myRow < 9; myRow++) {
+            for (int myCol = 1; myCol < 9; myCol++) {
+                ChessPosition curPosition = new ChessPosition(myRow, myCol);
+                ChessPiece curPiece = board.getPiece(curPosition);
+                if (curPiece == null) {continue;}
+                if (curPiece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> allPieceMoves = validMoves(curPosition);
+                    allTeamMoves.addAll(allPieceMoves);
+                }
+            }
+        }
+        return allTeamMoves;
+    }
+
+    /**
      * Makes a move in a chess game
      *
      * @param move chess move to preform
@@ -105,8 +127,7 @@ public class ChessGame {
      */
     public boolean isInCheckmate(TeamColor teamColor) {
         if (!isInCheck(teamColor)) {return false;}
-        ChessPosition kingPosition = getKingPosition(teamColor);
-        return validMoves(kingPosition).isEmpty();
+        return validTeamMoves(teamColor).isEmpty();
     }
 
     /**
@@ -117,25 +138,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        System.out.println(board.toString());
         // If you are in check, return false
         if (isInCheck(teamColor)) {return false;}
-
-        Collection<ChessMove> allTeamMoves = new ArrayList<>();
-
-        for (int myRow = 1; myRow < 9; myRow++) {
-            for (int myCol = 1; myCol < 9; myCol++) {
-                ChessPosition curPosition = new ChessPosition(myRow, myCol);
-                ChessPiece curPiece = board.getPiece(curPosition);
-                if (curPiece == null) {continue;}
-                if (curPiece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> allPieceMoves = validMoves(curPosition);
-                    allTeamMoves.addAll(allPieceMoves);
-                }
-            }
-        }
-
-        return allTeamMoves.isEmpty();
+        return validTeamMoves(teamColor).isEmpty();
     }
 
     /**
