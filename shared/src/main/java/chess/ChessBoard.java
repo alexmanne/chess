@@ -132,9 +132,21 @@ public class ChessBoard {
     public String toString() {
         StringBuilder returnString = new StringBuilder();
         for (int i = 0; i < 8; i++){
-            returnString.append(Arrays.deepToString(board[i]));
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] == null) {
+                    returnString.append("L, ");
+                } else {
+                    returnString.append(board[i][j].toString()).append(", ");
+                }
+            }
             returnString.append("\n");
         }
         return returnString.toString();
+    }
+
+    public ChessBoard copy(ChessBoard oldBoard) {
+        ChessBoard newBoard = new ChessBoard();
+        newBoard.board = oldBoard.board;
+        return newBoard;
     }
 }
