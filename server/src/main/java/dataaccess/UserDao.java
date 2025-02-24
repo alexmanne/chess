@@ -1,3 +1,5 @@
+package dataaccess;
+
 public interface UserDao {
 
 //    void createUser(UserData user) throws DataAccessException; {
