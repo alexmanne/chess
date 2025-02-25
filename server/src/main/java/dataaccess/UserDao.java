@@ -1,14 +1,15 @@
 package dataaccess;
 
+import model.UserData;
+
 public interface UserDao {
 
-//    void createUser(UserData user) throws DataAccessException; {
-//    }
-//
-//    UserData getUser(String username) throws DataAccessException; {
-//        UserData user = new UserData(username, "abs", "asdf");
-//        return user;
-//    }
+    /** Creates and stores a new user. */
+    void createUser(UserData user) throws DataAccessException;
+
+    /** Returns the UserData based on username. */
+    UserData getUser(String username) throws DataAccessException;
+
 }
 
 
