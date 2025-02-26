@@ -1,12 +1,12 @@
 package service;
 
-import dataaccess.MemoryGameDao;
+import dataaccess.GameDao;
 
 public class GameService {
 
-    public MemoryGameDao gameDB;
+    public GameDao gameDB;
 
-    public GameService(MemoryGameDao gameDB) {
+    public GameService(GameDao gameDB) {
         this.gameDB = gameDB;
     }
 
