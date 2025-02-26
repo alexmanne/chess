@@ -3,9 +3,22 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.UserData;
+import service.*;
 import spark.*;
 
 public class Server {
+
+    private final UserService userService;
+    private final AuthService authService;
+    private final GameService gameService;
+
+    public Server(UserService userService,
+                  AuthService authService,
+                  GameService gameService) {
+        this.userService = userService;
+        this.authService = authService;
+        this.gameService = gameService;
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -29,8 +42,8 @@ public class Server {
 
     private Object register(Request req, Response res) throws DataAccessException {
         var user = new Gson().fromJson(req.body(), UserData.class);
-        user = service.UserService::register(user);
-        return new Gson().toJson(pet);
+        user = userService.register(user);
+        return new Gson().toJson(user);
     }
 }
 

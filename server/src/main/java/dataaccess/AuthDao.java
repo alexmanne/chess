@@ -1,11 +1,10 @@
 package dataaccess;
 
 import model.AuthData;
-import model.UserData;
 
 import java.util.UUID;
 
-public interface AuthDAO {
+public interface AuthDao {
 
     /** Create a new AuthToken */
     public static String generateToken() {
