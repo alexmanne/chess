@@ -3,7 +3,6 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.request.RegisterRequest;
-import model.result.ClearResult;
 import model.result.RegisterResult;
 import model.UserData;
 
@@ -39,9 +38,9 @@ public class UserService {
             AuthData auth = new AuthData(user.username(), newToken);
             authDB.createAuth(auth);
 
-            return new RegisterResult(newToken, user.username());
+            return new RegisterResult(auth.username(), auth.authToken());
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // Catch a generic exception
             throw new DataAccessException(500, e.getMessage());
         }
@@ -49,19 +48,23 @@ public class UserService {
 
     /** Returns true if any part of registerRequest is empty*/
     private boolean badRequest(RegisterRequest registerRequest) {
-        boolean answer = false;
-        if (registerRequest.username().isEmpty()) {answer = true;}
+        boolean answer = registerRequest.username().isEmpty();
         if (registerRequest.password().isEmpty()) {answer = true;}
         if (registerRequest.email().isEmpty()) {answer = true;}
 
         return answer;
     }
 
-    public ClearResult clear() {
-        userDB.clear();
-        authDB.clear();
-        gameDB.clear();
-        return new ClearResult("");
+    public String clear() throws DataAccessException {
+        try {
+            userDB.clear();
+            authDB.clear();
+            gameDB.clear();
+            return "";
+        } catch (Throwable e) {
+            // Catch a generic exception
+            throw new DataAccessException(500, e.getMessage());
+        }
     }
 
 //    public LoginResult login(LoginRequest loginRequest) {}

@@ -3,26 +3,22 @@ package service;
 import dataaccess.*;
 import model.request.RegisterRequest;
 import model.result.RegisterResult;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import service.UserService;
 
 public class ServiceTests {
 
-    UserService userService;
-    GameService gameService;
+    UserDao userDB = new MemoryUserDao();
+    AuthDao authDB = new MemoryAuthDao();
+    GameDao gameDB = new MemoryGameDao();
+    UserService userService = new UserService(userDB, authDB, gameDB);
+    GameService gameService = new GameService(gameDB);
 
-    @BeforeEach
-    public void createServices() {
-        UserDao userDB = new MemoryUserDao();
-        AuthDao authDB = new MemoryAuthDao();
-        GameDao gameDB = new MemoryGameDao();
-
-        this.userService = new UserService(userDB, authDB, gameDB);
-        this.gameService = new GameService(gameDB);
-    }
+//    @BeforeEach
+//    public void createServices() throws DataAccessException {
+//        userService.clear();
+//    }
 
     @Test
     public void registerTest() throws DataAccessException {
