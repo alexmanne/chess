@@ -22,4 +22,9 @@ public class MemoryUserDao implements UserDao{
         }
         return users.get(username);
     }
+
+    @Override
+    public void clear() {
+        users.clear();
+    }
 }

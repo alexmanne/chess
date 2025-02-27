@@ -12,6 +12,9 @@ public interface UserDao {
     /** Returns the UserData based on username. */
     UserData getUser(String username);
 
+    /** Clears users of all data */
+    void clear();
+
 }
 
 

@@ -20,7 +20,7 @@ public class ServiceTests {
         AuthDao authDB = new MemoryAuthDao();
         GameDao gameDB = new MemoryGameDao();
 
-        this.userService = new UserService(userDB, authDB);
+        this.userService = new UserService(userDB, authDB, gameDB);
         this.gameService = new GameService(gameDB);
     }
 

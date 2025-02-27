@@ -19,4 +19,7 @@ public interface AuthDao {
 
     /** Deletes the AuthData given an authToken. */
     void deleteAuth(String authToken);
+
+    /** Clears all data */
+    void clear();
 }

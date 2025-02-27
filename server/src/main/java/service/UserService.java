@@ -3,6 +3,7 @@ package service;
 import dataaccess.*;
 import model.AuthData;
 import model.request.RegisterRequest;
+import model.result.ClearResult;
 import model.result.RegisterResult;
 import model.UserData;
 
@@ -10,10 +11,12 @@ public class UserService {
 
     private final UserDao userDB;
     private final AuthDao authDB;
+    private final GameDao gameDB;
 
-    public UserService(UserDao userDB, AuthDao authDB) {
+    public UserService(UserDao userDB, AuthDao authDB, GameDao gameDB) {
         this.userDB = userDB;
         this.authDB = authDB;
+        this.gameDB = gameDB;
     }
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
@@ -53,6 +56,14 @@ public class UserService {
 
         return answer;
     }
+
+    public ClearResult clear() {
+        userDB.clear();
+        authDB.clear();
+        gameDB.clear();
+        return new ClearResult("");
+    }
+
 //    public LoginResult login(LoginRequest loginRequest) {}
 //    public void logout(LogoutRequest logoutRequest) {}
 }

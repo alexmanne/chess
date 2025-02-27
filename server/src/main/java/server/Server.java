@@ -16,7 +16,7 @@ public class Server {
         AuthDao authDB = new MemoryAuthDao();
         GameDao gameDB = new MemoryGameDao();
 
-        this.userService = new UserService(userDB, authDB);
+        this.userService = new UserService(userDB, authDB, gameDB);
         this.gameService = new GameService(gameDB);
     }
 
@@ -27,6 +27,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
+        Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
@@ -41,6 +42,11 @@ public class Server {
     private Object register(Request req, Response res) throws DataAccessException {
         var request = new Gson().fromJson(req.body(), RegisterRequest.class);
         var result = userService.register(request);
+        return new Gson().toJson(result);
+    }
+
+    private Object clear(Request req, Response res) throws DataAccessException {
+        var result = userService.clear();
         return new Gson().toJson(result);
     }
 
