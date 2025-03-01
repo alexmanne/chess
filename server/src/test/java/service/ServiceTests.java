@@ -1,9 +1,12 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
+import model.request.CreateRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.CreateResult;
 import model.result.LoginResult;
 import model.result.RegisterResult;
 import org.eclipse.jetty.util.log.Log;
@@ -17,18 +20,16 @@ public class ServiceTests {
     AuthDao authDB = new MemoryAuthDao();
     GameDao gameDB = new MemoryGameDao();
     UserService userService = new UserService(userDB, authDB, gameDB);
-    GameService gameService = new GameService(gameDB);
+    GameService gameService = new GameService(userDB, authDB, gameDB);
+    String validAuthToken;
 
     @BeforeEach
     public void createServices() throws DataAccessException {
         userService.clear();
         RegisterRequest request1 = new RegisterRequest("genemann", "1234",
                 "am@gmail.com");
-        RegisterRequest request2 = new RegisterRequest("gamanne", "1234",
-                "am@gmail.com");
-
-        userService.register(request1);
-        userService.register(request2);
+        RegisterResult result1 = userService.register(request1);
+        validAuthToken = result1.authToken();
     }
 
     @Test
@@ -89,6 +90,28 @@ public class ServiceTests {
             userService.logout("notAnAuthToken");
         });
 
+    }
+
+    @Test
+    public void createGameTest() throws DataAccessException {
+        CreateRequest goodRequest = new CreateRequest("BestGame", validAuthToken);
+        CreateRequest checkGameIDReq = new CreateRequest("2", validAuthToken);
+        CreateRequest emptyRequest = new CreateRequest(null, validAuthToken);
+        CreateRequest invalidAuth = new CreateRequest("gameName", "notAnAuth");
+
+        CreateResult goodResult = gameService.createGame(goodRequest);
+        CreateResult checkGameIDRes = gameService.createGame(checkGameIDReq);
+
+        assertEquals("BestGame", gameDB.getGame(goodResult.gameID()).gameName());
+        assertEquals(2, checkGameIDRes.gameID());
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.createGame(emptyRequest);
+        });
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.createGame(invalidAuth);
+        });
     }
 
     @Test

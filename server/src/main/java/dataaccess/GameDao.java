@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.util.Collection;
@@ -8,7 +9,8 @@ import java.util.HashMap;
 public interface GameDao {
 
     /** Creates and stores GameData */
-    void createGame(GameData game);
+    int createGame(String whiteUsername, String blackUsername,
+                    String gameName, ChessGame game);
 
     /** Gets and lists all GameData. */
     HashMap<String, Collection<GameData>> listGames();
