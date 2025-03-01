@@ -48,6 +48,12 @@ public class UserService {
 
     /** Returns true if any part of registerRequest is empty*/
     private boolean badRequest(RegisterRequest registerRequest) {
+        if (registerRequest.username() == null |
+            registerRequest.password() == null |
+            registerRequest.email() == null) {
+            return true;
+        }
+
         boolean answer = registerRequest.username().isEmpty();
         if (registerRequest.password().isEmpty()) {answer = true;}
         if (registerRequest.email().isEmpty()) {answer = true;}
