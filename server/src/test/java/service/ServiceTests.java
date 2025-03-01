@@ -189,6 +189,7 @@ public class ServiceTests {
         assertEquals("two", goodResult1.username(), "Did not remove user 'two");
         assertEquals("three", goodResult2.username(), "Did not remove user 'three");
 
+        assertNull(userDB.getUser("one").username());
     }
 
 }
