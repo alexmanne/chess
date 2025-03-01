@@ -15,10 +15,10 @@ public class ServiceTests {
     UserService userService = new UserService(userDB, authDB, gameDB);
     GameService gameService = new GameService(gameDB);
 
-//    @BeforeEach
-//    public void createServices() throws DataAccessException {
-//        userService.clear();
-//    }
+    @BeforeEach
+    public void createServices() throws DataAccessException {
+        userService.clear();
+    }
 
     @Test
     public void registerTest() throws DataAccessException {

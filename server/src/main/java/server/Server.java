@@ -46,8 +46,7 @@ public class Server {
     }
 
     private Object clear(Request req, Response res) throws DataAccessException {
-        var result = userService.clear();
-        return new Gson().toJson(result);
+        return userService.clear();
     }
 
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
