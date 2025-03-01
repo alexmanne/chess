@@ -2,12 +2,12 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.request.CreateRequest;
+import model.request.JoinRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
-import model.result.CreateResult;
-import model.result.LoginResult;
-import model.result.RegisterResult;
+import model.result.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -115,12 +115,58 @@ public class ServiceTests {
 
     @Test
     public void listGamesTest() throws DataAccessException {
+        CreateRequest request1 = new CreateRequest("BestGame", validAuthToken);
+        CreateRequest request2 = new CreateRequest("BetterGame", validAuthToken);
+        CreateRequest request3 = new CreateRequest("GoodGame", validAuthToken);
+        gameService.createGame(request1);
+        gameService.createGame(request2);
+        gameService.createGame(request3);
+
+        ListResult listResult = gameService.listGames(validAuthToken);
+
+        ListOneGameResult verifyResult = new ListOneGameResult(1, null,
+                                                               null, "BestGame");
+        assertTrue(listResult.games().contains(verifyResult));
+
+        // Verify the size
+        assertEquals(3, listResult.games().size());
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.listGames("notAnAuthToken");
+        });
 
     }
 
     @Test
     public void joinGameTest() throws DataAccessException {
+        CreateRequest request1 = new CreateRequest("BestGame", validAuthToken);
+        gameService.createGame(request1);
 
+        JoinRequest goodRequest = new JoinRequest(validAuthToken, "WHITE", 1);
+        gameService.joinGame(goodRequest);
+        GameData game = gameDB.getGame(1);
+        assertEquals("genemann", game.whiteUsername());
+
+        JoinRequest badRequest = new JoinRequest(validAuthToken, "notAColor", 1);
+        JoinRequest wrongGameID = new JoinRequest(validAuthToken, "BLACK", 3);
+        JoinRequest invalidAuth = new JoinRequest("notAnAuthToken", "BLACK", 1);
+        JoinRequest alreadyTaken = new JoinRequest(validAuthToken, "WHITE", 1);
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.joinGame(badRequest);
+        });
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.joinGame(wrongGameID);
+        });
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.joinGame(invalidAuth);
+        });
+
+        assertThrows(DataAccessException.class, () -> {
+            gameService.joinGame(alreadyTaken);
+        });
     }
 
     @Test

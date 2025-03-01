@@ -91,14 +91,14 @@ public class GameService {
         if (auth.authToken() == null) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
+        GameData game = gameDB.getGame(request.gameID());
 
         // Verify if bad request
-        if (badJoinRequest(request)) {
+        if (badJoinRequest(request, game)) {
             throw new DataAccessException(400, "Error: bad request");
         }
 
         // Verify if the game already has a player in the desired color
-        GameData game = gameDB.getGame(request.gameID());
         if (request.playerColor().equals("WHITE")) {
             if (game.whiteUsername() != null) {
                 throw new DataAccessException(403, "Error: already taken");
@@ -128,9 +128,10 @@ public class GameService {
         }
     }
 
-    private boolean badJoinRequest(JoinRequest request) {
+    private boolean badJoinRequest(JoinRequest request, GameData game) {
         if (request.playerColor() == null) {return true;}
         if (request.gameID() == 0) {return true;}
+        if (game == null) {return true;}     // means the gameID was invalid
         return !request.playerColor().equals("BLACK") & !request.playerColor().equals("WHITE");
     }
 }
