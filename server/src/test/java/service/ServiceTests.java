@@ -43,4 +43,26 @@ public class ServiceTests {
         });
     }
 
+    @Test
+    public void clearTest() throws DataAccessException {
+
+        RegisterRequest goodRequest = new RegisterRequest("one", "1234",
+                "am@gmail.com");
+        RegisterRequest goodRequest1 = new RegisterRequest("two", "1234",
+                "am@gmail.com");
+        RegisterRequest goodRequest2 = new RegisterRequest("three", "1234",
+                "am@gmail.com");
+
+        RegisterResult goodResult = userService.register(goodRequest);
+        RegisterResult goodResult1 = userService.register(goodRequest1);
+        RegisterResult goodResult2 = userService.register(goodRequest2);
+
+        userService.clear();
+
+        assertEquals("one", goodResult.username(), "Did not remove user 'one");
+        assertEquals("two", goodResult1.username(), "Did not remove user 'two");
+        assertEquals("three", goodResult2.username(), "Did not remove user 'three");
+
+    }
+
 }
