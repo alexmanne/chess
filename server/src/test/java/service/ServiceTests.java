@@ -1,8 +1,11 @@
 package service;
 
 import dataaccess.*;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.LoginResult;
 import model.result.RegisterResult;
+import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +21,9 @@ public class ServiceTests {
     @BeforeEach
     public void createServices() throws DataAccessException {
         userService.clear();
+        RegisterRequest goodRequest = new RegisterRequest("genemann", "1234",
+                "am@gmail.com");
+        userService.register(goodRequest);
     }
 
     @Test
@@ -40,6 +46,26 @@ public class ServiceTests {
 
         assertThrows(DataAccessException.class, () -> {
             userService.register(badRequest);
+        });
+    }
+
+    @Test
+    public void loginTest() throws DataAccessException {
+
+        LoginRequest goodRequest = new LoginRequest("genemann", "1234");
+        LoginRequest badRequest = new LoginRequest("not a user", "1234");
+        LoginRequest wrongPass = new LoginRequest("genemann", "5678");
+
+        LoginResult goodResult = userService.login(goodRequest);
+
+        assertEquals("genemann", goodResult.username());
+        assertNotNull(goodResult.authToken(), "Result did not return auth String");
+
+        assertThrows(DataAccessException.class, () -> {
+            userService.login(badRequest);
+        });
+        assertThrows(DataAccessException.class, () -> {
+            userService.login(wrongPass);
         });
     }
 

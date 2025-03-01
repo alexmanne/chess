@@ -2,9 +2,13 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
+import model.result.LoginResult;
 import model.result.RegisterResult;
 import model.UserData;
+
+import javax.xml.crypto.Data;
 
 public class UserService {
 
@@ -20,7 +24,7 @@ public class UserService {
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
 
-        if (badRequest(registerRequest)) {
+        if (badRegisterRequest(registerRequest)) {
             throw new DataAccessException(400, "Error: bad request");
         }
 
@@ -47,7 +51,7 @@ public class UserService {
     }
 
     /** Returns true if any part of registerRequest is empty*/
-    private boolean badRequest(RegisterRequest registerRequest) {
+    private boolean badRegisterRequest(RegisterRequest registerRequest) {
         if (registerRequest.username() == null |
             registerRequest.password() == null |
             registerRequest.email() == null) {
@@ -73,6 +77,24 @@ public class UserService {
         }
     }
 
-//    public LoginResult login(LoginRequest loginRequest) {}
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException {
+        UserData user = userDB.getUser(loginRequest.username());
+        if (user.username() == null) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
+        if (!user.password().equals(loginRequest.password())) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
+
+        try {
+            String newToken = AuthDao.generateToken();
+            AuthData auth = new AuthData(user.username(), newToken);
+            authDB.createAuth(auth);
+            return new LoginResult(auth.username(), auth.authToken());
+        } catch (Throwable e) {
+            // Catch a generic exception
+            throw new DataAccessException(500, e.getMessage());
+        }
+    }
 //    public void logout(LogoutRequest logoutRequest) {}
 }

@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import service.*;
 import spark.*;
@@ -27,6 +28,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
 
@@ -42,6 +44,12 @@ public class Server {
     private Object register(Request req, Response res) throws DataAccessException {
         var request = new Gson().fromJson(req.body(), RegisterRequest.class);
         var result = userService.register(request);
+        return new Gson().toJson(result);
+    }
+
+    private Object login(Request req, Response res) throws DataAccessException {
+        var request = new Gson().fromJson(req.body(), LoginRequest.class);
+        var result = userService.login(request);
         return new Gson().toJson(result);
     }
 
