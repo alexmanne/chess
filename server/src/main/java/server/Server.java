@@ -7,6 +7,7 @@ import model.request.CreateRequest;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.CreateResult;
+import model.result.ListResult;
 import service.*;
 import spark.*;
 
@@ -33,6 +34,8 @@ public class Server {
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
         Spark.post("/game", this::createGame);
+        Spark.get("/game", this::listGames);
+        Spark.put("/game", this::joinGame)
         Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
@@ -68,6 +71,18 @@ public class Server {
         var httpRequest = new Gson().fromJson(req.body(), CreateJSON.class);
         CreateRequest request = new CreateRequest(httpRequest.gameName(), authToken);
         CreateResult result = gameService.createGame(request);
+        return new Gson().toJson(result);
+    }
+
+    private Object listGames(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("Authorization");
+        ListResult result = gameService.listGames(authToken);
+        return new Gson().toJson(result);
+    }
+
+    private Object joinGame(Request req, Response res) throws DataAccessException {
+        String authToken = req.headers("Authorization");
+        ListResult result = gameService.listGames(authToken);
         return new Gson().toJson(result);
     }
 
