@@ -96,5 +96,20 @@ public class UserService {
             throw new DataAccessException(500, e.getMessage());
         }
     }
-//    public void logout(LogoutRequest logoutRequest) {}
+
+    public String logout(String authToken) throws DataAccessException {
+        AuthData auth = authDB.getAuth(authToken);
+
+        if (auth.authToken() == null) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
+
+        try {
+            authDB.deleteAuth(authToken);
+            return "";
+        } catch (Throwable e) {
+            // Catch a generic exception
+            throw new DataAccessException(500, e.getMessage());
+        }
+    }
 }

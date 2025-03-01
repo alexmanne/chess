@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import model.AuthData;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
@@ -21,9 +22,13 @@ public class ServiceTests {
     @BeforeEach
     public void createServices() throws DataAccessException {
         userService.clear();
-        RegisterRequest goodRequest = new RegisterRequest("genemann", "1234",
+        RegisterRequest request1 = new RegisterRequest("genemann", "1234",
                 "am@gmail.com");
-        userService.register(goodRequest);
+        RegisterRequest request2 = new RegisterRequest("gamanne", "1234",
+                "am@gmail.com");
+
+        userService.register(request1);
+        userService.register(request2);
     }
 
     @Test
@@ -67,6 +72,23 @@ public class ServiceTests {
         assertThrows(DataAccessException.class, () -> {
             userService.login(wrongPass);
         });
+    }
+
+    @Test
+    public void logoutTest() throws DataAccessException {
+        LoginRequest request1 = new LoginRequest("genemann", "1234");
+        LoginResult result1 = userService.login(request1);
+
+        String authToken1 = result1.authToken();
+        userService.logout(authToken1);
+
+        AuthData auth = authDB.getAuth(authToken1);
+        assertNull(auth.authToken());
+
+        assertThrows(DataAccessException.class, () -> {
+            userService.logout("notAnAuthToken");
+        });
+
     }
 
     @Test
