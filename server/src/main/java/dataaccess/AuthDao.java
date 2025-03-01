@@ -7,7 +7,7 @@ import java.util.UUID;
 public interface AuthDao {
 
     /** Create a new AuthToken */
-    public static String generateToken() {
+    static String generateToken() {
         return UUID.randomUUID().toString();
     }
 

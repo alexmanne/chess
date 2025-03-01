@@ -2,8 +2,6 @@ package dataaccess;
 
 import model.UserData;
 
-import javax.xml.crypto.Data;
-
 public interface UserDao {
 
     /** Creates and stores a new user. */

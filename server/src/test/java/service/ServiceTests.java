@@ -1,6 +1,5 @@
 package service;
 
-import chess.ChessGame;
 import dataaccess.*;
 import model.AuthData;
 import model.request.CreateRequest;
@@ -9,9 +8,9 @@ import model.request.RegisterRequest;
 import model.result.CreateResult;
 import model.result.LoginResult;
 import model.result.RegisterResult;
-import org.eclipse.jetty.util.log.Log;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTests {
@@ -20,7 +19,7 @@ public class ServiceTests {
     AuthDao authDB = new MemoryAuthDao();
     GameDao gameDB = new MemoryGameDao();
     UserService userService = new UserService(userDB, authDB, gameDB);
-    GameService gameService = new GameService(userDB, authDB, gameDB);
+    GameService gameService = new GameService(authDB, gameDB);
     String validAuthToken;
 
     @BeforeEach
@@ -112,6 +111,16 @@ public class ServiceTests {
         assertThrows(DataAccessException.class, () -> {
             gameService.createGame(invalidAuth);
         });
+    }
+
+    @Test
+    public void listGamesTest() throws DataAccessException {
+
+    }
+
+    @Test
+    public void joinGameTest() throws DataAccessException {
+
     }
 
     @Test

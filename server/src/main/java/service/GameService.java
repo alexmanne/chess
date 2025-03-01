@@ -4,30 +4,24 @@ import chess.ChessGame;
 import dataaccess.AuthDao;
 import dataaccess.DataAccessException;
 import dataaccess.GameDao;
-import dataaccess.UserDao;
 import model.AuthData;
 import model.GameData;
-import model.UserData;
 import model.request.CreateRequest;
+import model.request.JoinRequest;
 import model.result.CreateResult;
 import model.result.ListOneGameResult;
 import model.result.ListResult;
-import model.result.RegisterResult;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 public class GameService {
 
-    private final UserDao userDB;
     private final AuthDao authDB;
     private final GameDao gameDB;
 
-    public GameService(UserDao userDB, AuthDao authDB, GameDao gameDB) {
-        this.userDB = userDB;
+    public GameService(AuthDao authDB, GameDao gameDB) {
         this.authDB = authDB;
         this.gameDB = gameDB;
     }
@@ -91,5 +85,52 @@ public class GameService {
         }
     }
 
+    public String joinGame (JoinRequest request) throws DataAccessException {
+        // Verify if authorized
+        AuthData auth = authDB.getAuth(request.authToken());
+        if (auth.authToken() == null) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
 
+        // Verify if bad request
+        if (badJoinRequest(request)) {
+            throw new DataAccessException(400, "Error: bad request");
+        }
+
+        // Verify if the game already has a player in the desired color
+        GameData game = gameDB.getGame(request.gameID());
+        if (request.playerColor().equals("WHITE")) {
+            if (game.whiteUsername() != null) {
+                throw new DataAccessException(403, "Error: already taken");
+            }
+        }
+        if (request.playerColor().equals("BLACK")) {
+            if (game.blackUsername() != null) {
+                throw new DataAccessException(403, "Error: already taken");
+            }
+        }
+
+        try {
+            GameData updatedGame;
+            if (request.playerColor().equals("WHITE")) {
+                updatedGame = new GameData(game.gameID(), auth.username(), game.blackUsername(),
+                                           game.gameName(), game.game());
+            } else {
+                updatedGame = new GameData(game.gameID(), game.whiteUsername(), auth.username(),
+                                           game.gameName(), game.game());
+            }
+            gameDB.updateGame(updatedGame);
+            return "";
+
+        } catch (Throwable e) {
+            // Catch a generic exception
+            throw new DataAccessException(500, e.getMessage());
+        }
+    }
+
+    private boolean badJoinRequest(JoinRequest request) {
+        if (request.playerColor() == null) {return true;}
+        if (request.gameID() == 0) {return true;}
+        return !request.playerColor().equals("BLACK") & !request.playerColor().equals("WHITE");
+    }
 }

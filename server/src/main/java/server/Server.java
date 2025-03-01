@@ -2,10 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
-import model.request.CreateJSON;
-import model.request.CreateRequest;
-import model.request.LoginRequest;
-import model.request.RegisterRequest;
+import model.request.*;
 import model.result.CreateResult;
 import model.result.ListResult;
 import service.*;
@@ -22,7 +19,7 @@ public class Server {
         GameDao gameDB = new MemoryGameDao();
 
         this.userService = new UserService(userDB, authDB, gameDB);
-        this.gameService = new GameService(userDB, authDB, gameDB);
+        this.gameService = new GameService(authDB, gameDB);
     }
 
     public int run(int desiredPort) {
@@ -35,7 +32,7 @@ public class Server {
         Spark.post("/session", this::login);
         Spark.post("/game", this::createGame);
         Spark.get("/game", this::listGames);
-        Spark.put("/game", this::joinGame)
+        Spark.put("/game", this::joinGame);
         Spark.delete("/session", this::logout);
         Spark.delete("/db", this::clear);
         Spark.exception(DataAccessException.class, this::exceptionHandler);
@@ -82,7 +79,9 @@ public class Server {
 
     private Object joinGame(Request req, Response res) throws DataAccessException {
         String authToken = req.headers("Authorization");
-        ListResult result = gameService.listGames(authToken);
+        var httpRequest = new Gson().fromJson(req.body(), JoinJSON.class);
+        JoinRequest request = new JoinRequest(authToken, httpRequest.playerColor(), httpRequest.gameID());
+        String result = gameService.joinGame(request);
         return new Gson().toJson(result);
     }
 

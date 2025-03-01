@@ -1,14 +1,15 @@
 package service;
 
-import dataaccess.*;
+import dataaccess.AuthDao;
+import dataaccess.DataAccessException;
+import dataaccess.GameDao;
+import dataaccess.UserDao;
 import model.AuthData;
+import model.UserData;
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
-import model.UserData;
-
-import javax.xml.crypto.Data;
 
 public class UserService {
 
