@@ -89,7 +89,7 @@ public class Server {
     }
 
     private void exceptionHandler(DataAccessException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.getStatusCode());
         res.body(ex.toJson());
     }
 }

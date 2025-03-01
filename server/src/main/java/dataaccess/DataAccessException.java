@@ -30,7 +30,7 @@ public class DataAccessException extends Exception{
         return new DataAccessException(status, message);
     }
 
-    public int StatusCode() {
+    public int getStatusCode() {
         return statusCode;
     }
 
