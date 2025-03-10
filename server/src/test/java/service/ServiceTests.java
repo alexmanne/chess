@@ -22,6 +22,9 @@ public class ServiceTests {
     GameService gameService = new GameService(authDB, gameDB);
     String validAuthToken;
 
+    public ServiceTests() throws DataAccessException {
+    }
+
     @BeforeEach
     public void createServices() throws DataAccessException {
         userService.clear();

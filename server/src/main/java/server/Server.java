@@ -14,7 +14,7 @@ public class Server {
     private final GameService gameService;
 
     public Server() {
-        UserDao userDB = new MemoryUserDao();
+        UserDao userDB = new MySQLUserDAO();
         AuthDao authDB = new MemoryAuthDao();
         GameDao gameDB = new MemoryGameDao();
 
