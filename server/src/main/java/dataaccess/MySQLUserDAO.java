@@ -13,6 +13,7 @@ public class MySQLUserDAO implements UserDao {
 
     public MySQLUserDAO() {
         noTable = true;
+
     }
 
     @Override
@@ -34,20 +35,22 @@ public class MySQLUserDAO implements UserDao {
                 try (var rs = ps.executeQuery()) {
                     if (rs.next()) {
                         return readUser(rs);
+                    } else {
+                        return new UserData(null, null, null);
                     }
                 }
             }
         } catch (Exception e) {
             throw new DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
         }
-        return null;
     }
 
     @Override
     public void clear() throws DataAccessException {
         if (noTable) { configureDatabase(); }
-        var statement = "TRUNCATE users";
+        var statement = "DROP TABLE IF EXISTS users";
         executeUpdate(statement);
+        this.noTable = true;
     }
 
     private UserData readUser(ResultSet rs) throws SQLException {
