@@ -62,7 +62,7 @@ public class MySQLAuthDao implements AuthDao {
 
     private AuthData readAuth(ResultSet rs) throws SQLException {
         var username = rs.getString("username");
-        var authToken = rs.getString("password");
+        var authToken = rs.getString("authToken");
         return new AuthData(username, authToken);
     }
 

@@ -1,6 +1,7 @@
 package dao;
 
 import dataaccess.*;
+import model.AuthData;
 import model.UserData;
 import model.request.RegisterRequest;
 import model.result.RegisterResult;
@@ -18,6 +19,7 @@ public class DaoTests {
     @BeforeEach
     public void createServices() throws DataAccessException {
         userDB.clear();
+        authDB.clear();
     }
 
     @Test
@@ -55,7 +57,67 @@ public class DaoTests {
     }
 
     @Test
-    public void positiveClear() {
+    public void positiveClearUser() {
+        assertDoesNotThrow(() -> userDB.clear());
+    }
+
+    @Test
+    public void positiveCreateAuth() {
+        String token = AuthDao.generateToken();
+        AuthData auth = new AuthData("alex", token);
+        assertDoesNotThrow(() -> authDB.createAuth(auth));
+    }
+
+    @Test
+    public void negativeCreateAuth() throws DataAccessException {
+        String token = AuthDao.generateToken();
+        AuthData auth = new AuthData("alex", token);
+        AuthData copyAuth = new AuthData("alex", token);
+
+        authDB.createAuth(auth);
+        assertThrows(DataAccessException.class, () -> {
+            authDB.createAuth(copyAuth);
+        });
+    }
+
+    @Test
+    public void positiveGetAuth() throws DataAccessException {
+        String token = AuthDao.generateToken();
+        AuthData auth = new AuthData("alex", token);
+        authDB.createAuth(auth);
+
+        AuthData checkAuth = authDB.getAuth(token);
+        assertEquals(auth.username(), checkAuth.username());
+        assertEquals(token, checkAuth.authToken());
+    }
+
+    @Test
+    public void negativeGetAuth() throws DataAccessException {
+        UserData user = new UserData("alex", "1234", "am@gmail.com");
+        userDB.createUser(user);
+        UserData newUser = userDB.getUser("not alex");
+        assertNull(newUser.username());
+    }
+
+    @Test
+    public void positiveDeleteAuth() throws DataAccessException {
+        UserData user = new UserData("alex", "1234", "am@gmail.com");
+        userDB.createUser(user);
+        UserData checkUser = userDB.getUser("alex");
+        assertEquals(user.username(), checkUser.username());
+        assertEquals(user.password(), checkUser.password());
+    }
+
+    @Test
+    public void negativeDeleteAuth() throws DataAccessException {
+        UserData user = new UserData("alex", "1234", "am@gmail.com");
+        userDB.createUser(user);
+        UserData newUser = userDB.getUser("not alex");
+        assertNull(newUser.username());
+    }
+
+    @Test
+    public void positiveClearAuth() {
         assertDoesNotThrow(() -> userDB.clear());
     }
 
