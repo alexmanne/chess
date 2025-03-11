@@ -3,8 +3,6 @@ package dao;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
-import model.request.RegisterRequest;
-import model.result.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -103,24 +101,25 @@ public class DaoTests {
 
     @Test
     public void positiveDeleteAuth() throws DataAccessException {
-        UserData user = new UserData("alex", "1234", "am@gmail.com");
-        userDB.createUser(user);
-        UserData checkUser = userDB.getUser("alex");
-        assertEquals(user.username(), checkUser.username());
-        assertEquals(user.password(), checkUser.password());
+        String token = AuthDao.generateToken();
+        AuthData auth = new AuthData("alex", token);
+        authDB.createAuth(auth);
+
+        assertDoesNotThrow(() -> authDB.deleteAuth(token));
     }
 
     @Test
     public void negativeDeleteAuth() throws DataAccessException {
-        UserData user = new UserData("alex", "1234", "am@gmail.com");
-        userDB.createUser(user);
-        UserData newUser = userDB.getUser("not alex");
-        assertNull(newUser.username());
+        String token = AuthDao.generateToken();
+        AuthData auth = new AuthData("alex", token);
+        authDB.createAuth(auth);
+
+        assertDoesNotThrow(() -> authDB.deleteAuth("Not a token"));
     }
 
     @Test
     public void positiveClearAuth() {
-        assertDoesNotThrow(() -> userDB.clear());
+        assertDoesNotThrow(() -> authDB.clear());
     }
 
 }

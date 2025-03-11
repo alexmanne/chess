@@ -15,7 +15,7 @@ public class Server {
 
     public Server() {
         UserDao userDB = new MySQLUserDAO();
-        AuthDao authDB = new MemoryAuthDao();
+        AuthDao authDB = new MySQLAuthDao();
         GameDao gameDB = new MemoryGameDao();
 
         this.userService = new UserService(userDB, authDB, gameDB);
