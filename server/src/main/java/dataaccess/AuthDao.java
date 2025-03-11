@@ -12,14 +12,14 @@ public interface AuthDao {
     }
 
     /** Creates and stores AuthData. */
-    void createAuth(AuthData auth);
+    void createAuth(AuthData auth) throws DataAccessException ;
 
     /** Returns the AuthData based on authToken. */
-    AuthData getAuth(String authToken);
+    AuthData getAuth(String authToken) throws DataAccessException ;
 
     /** Deletes the AuthData given an authToken. */
-    void deleteAuth(String authToken);
+    void deleteAuth(String authToken) throws DataAccessException ;
 
     /** Clears all data */
-    void clear();
+    void clear() throws DataAccessException ;
 }
