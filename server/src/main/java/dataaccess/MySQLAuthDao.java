@@ -4,6 +4,11 @@ import model.AuthData;
 
 public class MySQLAuthDao implements AuthDao {
 
+    boolean noTable;
+
+    public MySQLAuthDao() {
+        noTable = true;
+    }
 
     @Override
     public void createAuth(AuthData auth) {
