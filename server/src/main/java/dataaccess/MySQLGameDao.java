@@ -8,6 +8,11 @@ import java.util.HashMap;
 
 public class MySQLGameDao implements GameDao {
 
+    boolean noTable;
+
+    public MySQLGameDao() {
+        noTable = true;
+    }
 
     @Override
     public int createGame(String whiteUsername, String blackUsername, String gameName, ChessGame game) {
