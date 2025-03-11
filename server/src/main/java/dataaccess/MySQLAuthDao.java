@@ -5,8 +5,6 @@ import model.AuthData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-
 public class MySQLAuthDao implements AuthDao {
 
     boolean noTable;
@@ -45,9 +43,11 @@ public class MySQLAuthDao implements AuthDao {
     }
 
     @Override
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws DataAccessException {
+        if (noTable) { configureDatabase(); }
 
-
+        var statement = "DELETE FROM tokens WHERE authToken=?";
+        executeUpdate(statement, authToken);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MySQLAuthDao implements AuthDao {
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+            try (var ps = conn.prepareStatement(statement)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i + 1, p);
