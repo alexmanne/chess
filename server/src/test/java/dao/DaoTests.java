@@ -93,10 +93,12 @@ public class DaoTests {
 
     @Test
     public void negativeGetAuth() throws DataAccessException {
-        UserData user = new UserData("alex", "1234", "am@gmail.com");
-        userDB.createUser(user);
-        UserData newUser = userDB.getUser("not alex");
-        assertNull(newUser.username());
+        String token = AuthDao.generateToken();
+        AuthData auth = new AuthData("alex", token);
+        authDB.createAuth(auth);
+
+        AuthData checkAuth = authDB.getAuth("Not an Auth");
+        assertNull(checkAuth.username());
     }
 
     @Test
