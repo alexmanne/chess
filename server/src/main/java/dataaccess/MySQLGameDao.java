@@ -39,7 +39,8 @@ public class MySQLGameDao implements GameDao {
         HashMap<String, Collection<GameData>> gameMap = new HashMap<>();
         var gameArray = new ArrayList<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, game FROM games";
+            var statement = "SELECT id, whiteUsername, blackUsername, " +
+                            "gameName, game FROM games";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -59,7 +60,8 @@ public class MySQLGameDao implements GameDao {
         if (noTable) { configureDatabase(); }
 
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, json FROM pet WHERE id=?";
+            var statement = "SELECT id, whiteUsername, blackUsername, " +
+                            "gameName, game FROM games WHERE id=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -135,7 +137,7 @@ public class MySQLGameDao implements GameDao {
               `blackUsername` varchar(256),
               `gameName` varchar(256) NOT NULL,
               `game` TEXT NOT NULL,
-              PRIMARY KEY (`id`),
+              PRIMARY KEY (`id`)
             );
             """
     };
