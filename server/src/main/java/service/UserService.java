@@ -10,6 +10,7 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
 
@@ -83,7 +84,9 @@ public class UserService {
         if (user.username() == null) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
-        if (!user.password().equals(loginRequest.password())) {
+
+        var hashedPassword = user.password();
+        if (!BCrypt.checkpw(loginRequest.password(), hashedPassword)) {
             throw new DataAccessException(401, "Error: unauthorized");
         }
 
