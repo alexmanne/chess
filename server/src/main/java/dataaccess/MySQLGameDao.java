@@ -78,6 +78,11 @@ public class MySQLGameDao implements GameDao {
     public void updateGame(GameData game) throws DataAccessException {
         if (noTable) { configureDatabase(); }
 
+        var statement = ("UPDATE games SET whiteUsername = ?, blackUsername = ?, " +
+                         "gameName = ?, game = ? WHERE id = ?");
+        var json = new Gson().toJson(game.game());
+        executeUpdate(statement, game.whiteUsername(), game.blackUsername(),
+                                 game.gameName(), json, game.gameID());
     }
 
     @Override
