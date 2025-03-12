@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
+import static dataaccess.DatabaseManager.executeUpdate;
 
 public class MySQLGameDao implements GameDao {
 
@@ -24,7 +23,10 @@ public class MySQLGameDao implements GameDao {
     @Override
     public int createGame(String whiteUsername, String blackUsername,
                           String gameName, ChessGame game) throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         var statement = ("INSERT INTO games (whiteUsername, blackUsername, gameName, game) " +
                          "VALUES (?, ?, ?, ?)");
@@ -34,7 +36,10 @@ public class MySQLGameDao implements GameDao {
 
     @Override
     public HashMap<String, Collection<GameData>> listGames() throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         HashMap<String, Collection<GameData>> gameMap = new HashMap<>();
         var gameArray = new ArrayList<GameData>();
@@ -57,7 +62,10 @@ public class MySQLGameDao implements GameDao {
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT id, whiteUsername, blackUsername, " +
@@ -78,7 +86,10 @@ public class MySQLGameDao implements GameDao {
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         var statement = ("UPDATE games SET whiteUsername = ?, blackUsername = ?, " +
                          "gameName = ?, game = ? WHERE id = ?");
@@ -89,7 +100,10 @@ public class MySQLGameDao implements GameDao {
 
     @Override
     public void clear() throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         var statement = "DROP TABLE IF EXISTS games";
         executeUpdate(statement);
@@ -106,29 +120,6 @@ public class MySQLGameDao implements GameDao {
         return new GameData(id, whiteUsername, blackUsername, gameName, game);
     }
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
-
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  games (
@@ -141,20 +132,4 @@ public class MySQLGameDao implements GameDao {
             );
             """
     };
-
-
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-        this.noTable = false;
-    }
-
 }

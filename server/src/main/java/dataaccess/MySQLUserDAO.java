@@ -6,7 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static dataaccess.DatabaseManager.executeUpdate;
 
 public class MySQLUserDAO implements UserDao {
 
@@ -19,7 +19,10 @@ public class MySQLUserDAO implements UserDao {
 
     @Override
     public void createUser(UserData user) throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         String hashedPassword = BCrypt.hashpw(user.password(), BCrypt.gensalt());
         var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
@@ -28,7 +31,10 @@ public class MySQLUserDAO implements UserDao {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
 
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM users WHERE username=?";
@@ -49,7 +55,11 @@ public class MySQLUserDAO implements UserDao {
 
     @Override
     public void clear() throws DataAccessException {
-        if (noTable) { configureDatabase(); }
+        if (noTable) {
+            DatabaseManager.configureDatabase(createStatements);
+            this.noTable = false;
+        }
+
         var statement = "DROP TABLE IF EXISTS users";
         executeUpdate(statement);
         this.noTable = true;
@@ -60,20 +70,6 @@ public class MySQLUserDAO implements UserDao {
         var password = rs.getString("password");
         var email = rs.getString("email");
         return new UserData(username, password, email);
-    }
-
-    private void executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                }
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
     }
 
     private final String[] createStatements = {
@@ -87,17 +83,4 @@ public class MySQLUserDAO implements UserDao {
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (DataAccessException | SQLException ex) {
-            throw new DataAccessException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-        this.noTable = false;
-    }
 }
