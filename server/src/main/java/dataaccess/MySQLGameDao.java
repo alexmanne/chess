@@ -58,6 +58,19 @@ public class MySQLGameDao implements GameDao {
     public GameData getGame(int gameID) throws DataAccessException {
         if (noTable) { configureDatabase(); }
 
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, json FROM pet WHERE id=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(500, String.format("Unable to read data: %s", e.getMessage()));
+        }
         return null;
     }
 
