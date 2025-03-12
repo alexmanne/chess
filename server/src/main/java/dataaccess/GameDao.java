@@ -10,18 +10,18 @@ public interface GameDao {
 
     /** Creates and stores GameData */
     int createGame(String whiteUsername, String blackUsername,
-                    String gameName, ChessGame game);
+                    String gameName, ChessGame game) throws DataAccessException;
 
     /** Gets and lists all GameData. */
-    HashMap<String, Collection<GameData>> listGames();
+    HashMap<String, Collection<GameData>> listGames() throws DataAccessException;
 
     /** Retrieve a specified game with the given game ID. */
-    GameData getGame(int gameID);
+    GameData getGame(int gameID) throws DataAccessException;
 
     /** Replace the game with the same gameID */
-    void updateGame(GameData game);
+    void updateGame(GameData game) throws DataAccessException;
 
     /** Clears all data */
-    void clear();
+    void clear() throws DataAccessException;
 
 }

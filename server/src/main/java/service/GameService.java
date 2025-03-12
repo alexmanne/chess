@@ -1,6 +1,7 @@
 package service;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import dataaccess.AuthDao;
 import dataaccess.DataAccessException;
 import dataaccess.GameDao;
