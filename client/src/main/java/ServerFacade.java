@@ -34,9 +34,11 @@ public class ServerFacade {
 //        var path = "/pet";
 //        // Make request does stuff to turn it to http
 //        // pet is the java object to go to the body of the http request
-//        // the class is the class it is expecting to recieve so it can serialize in json
+//        // the class is the class it is expecting to receive so it can serialize in json
 //        return this.makeRequest("POST", path, pet, Pet.class);
 //    }
+
+    // Code from petshop/shared/src/main/server/ServerFacade.java
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws DataAccessException
     {
