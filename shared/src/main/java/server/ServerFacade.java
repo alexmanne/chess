@@ -1,9 +1,7 @@
 package server;
 
-import model.request.LoginRequest;
-import model.request.RegisterRequest;
-import model.result.LoginResult;
-import model.result.RegisterResult;
+import model.request.*;
+import model.result.*;
 
 import dataaccess.DataAccessException;
 
@@ -31,6 +29,18 @@ public class ServerFacade {
     }
 
     public LoginResult login(LoginRequest request) {
+        return null;
+    }
+
+    public String logout(String authToken) {
+        return null;
+    }
+
+    public ListResult listGames(String authToken) {
+        return null;
+    }
+
+    public CreateResult createGame(CreateRequest request) {
         return null;
     }
 
