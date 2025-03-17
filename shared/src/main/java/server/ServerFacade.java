@@ -1,7 +1,11 @@
+package server;
+
 import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
+
+import dataaccess.DataAccessException;
 
 import com.google.gson.Gson;
 
@@ -38,10 +42,10 @@ public class ServerFacade {
 //        return this.makeRequest("POST", path, pet, Pet.class);
 //    }
 
-    // Code from petshop/shared/src/main/server/ServerFacade.java
+    // Code from petshop/shared/src/main/server/client.ServerFacade.java
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws DataAccessException
-    {
+    private <T> T makeRequest(String method, String path, Object request,
+                              Class<T> responseClass) throws DataAccessException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
