@@ -1,6 +1,6 @@
 package server;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 import model.request.CreateRequest;
 import model.request.JoinRequest;
 import model.request.LoginRequest;

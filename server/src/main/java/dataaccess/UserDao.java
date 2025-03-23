@@ -1,8 +1,7 @@
 package dataaccess;
 
+import exception.DataAccessException;
 import model.UserData;
-
-import javax.xml.crypto.Data;
 
 public interface UserDao {
 

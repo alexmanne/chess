@@ -3,7 +3,7 @@ package server;
 import model.request.*;
 import model.result.*;
 
-import dataaccess.DataAccessException;
+import exception.DataAccessException;
 
 import com.google.gson.Gson;
 

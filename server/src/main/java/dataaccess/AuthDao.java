@@ -1,5 +1,6 @@
 package dataaccess;
 
+import exception.DataAccessException;
 import model.AuthData;
 
 import java.util.UUID;
@@ -12,7 +13,7 @@ public interface AuthDao {
     }
 
     /** Creates and stores AuthData. */
-    void createAuth(AuthData auth) throws DataAccessException ;
+    void createAuth(AuthData auth) throws DataAccessException;
 
     /** Returns the AuthData based on authToken. */
     AuthData getAuth(String authToken) throws DataAccessException ;
