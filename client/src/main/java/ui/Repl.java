@@ -17,9 +17,9 @@ public class Repl {
     private boolean isPlaying;
 
     public Repl(String serverUrl) {
-        preLoginClient = new PreLoginClient();
-        postLoginClient = new PostLoginClient();
-        gamePlayClient = new GamePlayClient();
+        preLoginClient = new PreLoginClient(serverUrl);
+        postLoginClient = new PostLoginClient(serverUrl);
+        gamePlayClient = new GamePlayClient(serverUrl);
         isLoggedIn = false;
         isPlaying = false;
     }
