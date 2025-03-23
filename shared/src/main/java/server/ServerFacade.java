@@ -40,9 +40,9 @@ public class ServerFacade {
 
     public CreateResult createGame(CreateRequest request) throws DataAccessException {
         String path = "/game";
-        String gameName = request.gameName();
+        CreateJSON jsonBody = new CreateJSON(request.gameName());
         String authToken = request.authToken();
-        return makeRequest("POST", path, gameName, authToken, CreateResult.class);
+        return makeRequest("POST", path, jsonBody, authToken, CreateResult.class);
     }
 
     public String joinGame(JoinRequest request) throws DataAccessException {
