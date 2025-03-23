@@ -18,43 +18,46 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public RegisterResult register(RegisterRequest request) {
-        // serialize to json
-        // create an http request and put the json in the body
-        // call the http server
-        // receive the http result
-        // convert back into register request
-
-        return null;
+    public RegisterResult register(RegisterRequest request) throws DataAccessException {
+        String path = "/user";
+        return makeRequest("POST", path, request, null, RegisterResult.class);
     }
 
-    public LoginResult login(LoginRequest request) {
-        return null;
+    public LoginResult login(LoginRequest request) throws DataAccessException {
+        String path = "/session";
+        return makeRequest("POST", path, request, null, LoginResult.class);
     }
 
-    public String logout(String authToken) {
-        return null;
+    public String logout(String authToken) throws DataAccessException {
+        String path = "/session";
+        return makeRequest("DELETE", path, null, authToken, String.class);
     }
 
-    public ListResult listGames(String authToken) {
-        return null;
+    public ListResult listGames(String authToken) throws DataAccessException {
+        String path = "/game";
+        return makeRequest("GET", path, null, authToken, ListResult.class);
     }
 
-    public CreateResult createGame(CreateRequest request) {
-        return null;
+    public CreateResult createGame(CreateRequest request) throws DataAccessException {
+        String path = "/game";
+        String gameName = request.gameName();
+        String authToken = request.authToken();
+        return makeRequest("POST", path, gameName, authToken, CreateResult.class);
     }
 
-//    public Pet addPet(Pet pet) throws ResponseException {
-//        var path = "/pet";
-//        // Make request does stuff to turn it to http
-//        // pet is the java object to go to the body of the http request
-//        // the class is the class it is expecting to receive so it can serialize in json
-//        return this.makeRequest("POST", path, pet, Pet.class);
-//    }
+    public String joinGame(JoinRequest request) throws DataAccessException {
+        String path = "/game";
+        String authToken = request.authToken();
+        JoinJSON jsonBody = new JoinJSON(request.playerColor(), request.gameID());
+        return makeRequest("PUT", path, jsonBody, authToken, String.class);
+    }
 
-    // Code from petshop/shared/src/main/server/client.ServerFacade.java
+    public String clear() throws DataAccessException {
+        String path = "/db";
+        return makeRequest("DELETE", path, null, null, String.class);
+    }
 
-    private <T> T makeRequest(String method, String path, Object request,
+    private <T> T makeRequest(String method, String path, Object request, String header,
                               Class<T> responseClass) throws DataAccessException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
@@ -63,6 +66,7 @@ public class ServerFacade {
             http.setDoOutput(true);
 
             writeBody(request, http);
+            writeHeader(header, http);
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
@@ -73,7 +77,6 @@ public class ServerFacade {
         }
     }
 
-
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
@@ -81,6 +84,12 @@ public class ServerFacade {
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
             }
+        }
+    }
+
+    private static void writeHeader(String header, HttpURLConnection http) throws IOException {
+        if (header != null) {
+            http.addRequestProperty("Authorization", header);
         }
     }
 
@@ -109,7 +118,6 @@ public class ServerFacade {
         }
         return response;
     }
-
 
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
