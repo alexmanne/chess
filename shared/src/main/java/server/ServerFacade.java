@@ -87,7 +87,7 @@ public class ServerFacade {
         }
     }
 
-    private static void writeHeader(String header, HttpURLConnection http) throws IOException {
+    private static void writeHeader(String header, HttpURLConnection http) {
         if (header != null) {
             http.addRequestProperty("Authorization", header);
         }
