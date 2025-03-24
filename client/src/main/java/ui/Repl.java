@@ -47,12 +47,14 @@ public class Repl {
 
         try {
             result = preLoginClient.eval(line);
+            if (result.startsWith("logging in")) {
+                isLoggedIn = true;
+                var resultParts = result.split("\t");
+                result = resultParts[0];
+                authToken = resultParts[1];
+            }
             System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
             System.out.print(result);
-
-            if (result.equals("logging in")) {
-                isLoggedIn = true;
-            }
 
         } catch (Throwable e) {
             var msg = e.toString();
