@@ -12,7 +12,7 @@ public class Repl {
     private final PreLoginClient preLoginClient;
     private final PostLoginClient postLoginClient;
     private final GamePlayClient gamePlayClient;
-    private String authtoken;
+    private String authToken;
     private boolean isLoggedIn;
     private boolean isPlaying;
 
@@ -22,6 +22,7 @@ public class Repl {
         gamePlayClient = new GamePlayClient(serverUrl);
         isLoggedIn = false;
         isPlaying = false;
+        authToken = "";
     }
 
     public void run() {
@@ -29,9 +30,9 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quitting")) {
-            if (this.isPlaying == true) {
+            if (this.isPlaying) {
                 result = runGamePlay(scanner);
-            } else if (this.isLoggedIn == true) {
+            } else if (this.isLoggedIn) {
                 result = runLoggedIn(scanner);
             } else {
                 result = runLoggedOut(scanner);
@@ -48,6 +49,11 @@ public class Repl {
             result = preLoginClient.eval(line);
             System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
             System.out.print(result);
+
+            if (result.equals("logging in")) {
+                isLoggedIn = true;
+            }
+
         } catch (Throwable e) {
             var msg = e.toString();
             System.out.print(msg);
@@ -68,7 +74,7 @@ public class Repl {
         String result = "";
 
         try {
-            result = postLoginClient.eval(line);
+            result = postLoginClient.eval(line, authToken);
             System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
             System.out.print(result);
         } catch (Throwable e) {

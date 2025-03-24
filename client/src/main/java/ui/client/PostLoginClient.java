@@ -13,12 +13,13 @@ public class PostLoginClient {
         server = new ServerFacade(serverUrl);
     }
 
-    public String eval(String inputLine) {
+    public String eval(String inputLine, String authToken) {
         try {
             var tokens = inputLine.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-//            return switch (cmd) {
+            return switch (cmd) {
+                case "logout" -> logout(params);
 //                case "signin" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
 //                case "list" -> listPets();
@@ -26,11 +27,18 @@ public class PostLoginClient {
 //                case "adopt" -> adoptPet(params);
 //                case "adoptall" -> adoptAllPets();
 //                case "quit" -> "quit";
-//                default -> help();
-//            };
+                default -> help();
+            };
         } catch (DataAccessException ex) {
             return ex.getMessage();
         }
+    }
+
+    public String logout(String... params) throws DataAccessException {
+        return null;
+    }
+
+    public String help() throws DataAccessException {
         return null;
     }
 }
