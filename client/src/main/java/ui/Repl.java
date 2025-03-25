@@ -12,9 +12,9 @@ public class Repl {
     private final PreLoginClient preLoginClient;
     private final PostLoginClient postLoginClient;
     private final GamePlayClient gamePlayClient;
-    private String authToken;
-    private boolean isLoggedIn;
-    private boolean isPlaying;
+    public String authToken;
+    public boolean isLoggedIn;
+    public boolean isPlaying;
 
     public Repl(String serverUrl) {
         preLoginClient = new PreLoginClient(serverUrl);
@@ -46,13 +46,7 @@ public class Repl {
         String result = "";
 
         try {
-            result = preLoginClient.eval(line);
-            if (result.startsWith("logging in")) {
-                isLoggedIn = true;
-                var resultParts = result.split("\t");
-                result = resultParts[0];
-                authToken = resultParts[1];
-            }
+            result = preLoginClient.eval(line, this);
             System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
             System.out.print(result);
 
@@ -76,7 +70,7 @@ public class Repl {
         String result = "";
 
         try {
-            result = postLoginClient.eval(line, authToken);
+            result = postLoginClient.eval(line, this);
             System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
             System.out.print(result);
         } catch (Throwable e) {

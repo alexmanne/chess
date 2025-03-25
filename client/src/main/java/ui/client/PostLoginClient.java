@@ -2,6 +2,7 @@ package ui.client;
 
 import exception.DataAccessException;
 import server.ServerFacade;
+import ui.Repl;
 
 import java.util.Arrays;
 
@@ -13,13 +14,13 @@ public class PostLoginClient {
         server = new ServerFacade(serverUrl);
     }
 
-    public String eval(String inputLine, String authToken) {
+    public String eval(String inputLine, Repl repl) {
         try {
             var tokens = inputLine.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "logout" -> logout(params);
+                case "logout" -> logout(repl, params);
 //                case "signin" -> signIn(params);
 //                case "rescue" -> rescuePet(params);
 //                case "list" -> listPets();
@@ -34,7 +35,7 @@ public class PostLoginClient {
         }
     }
 
-    public String logout(String... params) throws DataAccessException {
+    public String logout(Repl repl, String... params) throws DataAccessException {
         return null;
     }
 

@@ -7,6 +7,7 @@ import model.result.LoginResult;
 import model.result.RegisterResult;
 import server.ServerFacade;
 import ui.EscapeSequences;
+import ui.Repl;
 
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
@@ -20,14 +21,14 @@ public class PreLoginClient {
         server = new ServerFacade(serverUrl);
     }
 
-    public String eval(String inputLine) {
+    public String eval(String inputLine, Repl repl) {
         try {
             var tokens = inputLine.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "register" -> register(params);
-                case "login" -> login(params);
+                case "register" -> register(repl, params);
+                case "login" -> login(repl, params);
                 case "quit" -> "quitting";
                 default -> help();
             };
@@ -36,7 +37,7 @@ public class PreLoginClient {
         }
     }
 
-    public String register(String... params) throws DataAccessException {
+    public String register(Repl repl, String... params) throws DataAccessException {
         if (params.length >= 3) {
             String username = params[0];
             String password = params[1];
@@ -44,19 +45,23 @@ public class PreLoginClient {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_RED);
             RegisterRequest request = new RegisterRequest(username, password, email);
             RegisterResult result = server.register(request);
-            return "logging in " + request.username() + "\t" + result.authToken();
+            repl.isLoggedIn = true;
+            repl.authToken = result.authToken();
+            return "logging in " + request.username();
         }
         throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>. Example:\n" +
                 "login user123 pass1234 user@email.com");
     }
 
-    public String login(String... params) throws DataAccessException {
+    public String login(Repl repl, String... params) throws DataAccessException {
         if (params.length >= 2) {
             String username = params[0];
             String password = params[1];
             LoginRequest request = new LoginRequest(username, password);
             LoginResult result = server.login(request);
-            return "logging in " + request.username() + "\t" + result.authToken();
+            repl.isLoggedIn = true;
+            repl.authToken = result.authToken();
+            return "logging in " + request.username();
         }
         throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>. Example:\n" +
                                            "login user123 pass1234");
