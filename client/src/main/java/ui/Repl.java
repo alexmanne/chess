@@ -90,7 +90,7 @@ public class Repl {
         String result = "";
 
         try {
-            result = gamePlayClient.eval(line);
+            result = gamePlayClient.eval(line, this);
             System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
             System.out.print(result);
         } catch (Throwable e) {

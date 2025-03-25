@@ -2,6 +2,8 @@ package ui.client;
 
 import ui.EscapeSequences;
 import ui.ServerFacade;
+import ui.Repl;
+import ui.State;
 
 public class GamePlayClient {
 
@@ -13,7 +15,10 @@ public class GamePlayClient {
         this.server = server;
     }
 
-    public String eval(String inputLine) {
+    public String eval(String inputLine, Repl repl) {
+        if (inputLine.equals("leave")) {
+            repl.state = State.LOGGEDIN;
+        }
         return inputLine;
     }
 
