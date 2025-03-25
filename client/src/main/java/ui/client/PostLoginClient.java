@@ -3,19 +3,21 @@ package ui.client;
 import com.google.gson.Gson;
 import exception.DataAccessException;
 import model.request.CreateRequest;
-import model.request.LoginRequest;
+import model.request.JoinRequest;
 import model.result.CreateResult;
+import model.result.ListOneGameResult;
 import model.result.ListResult;
-import model.result.LoginResult;
 import server.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PostLoginClient {
 
     private final ServerFacade server;
+    private ArrayList<ListOneGameResult> games;
 
     public PostLoginClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -54,22 +56,38 @@ public class PostLoginClient {
     public String list(Repl repl) throws DataAccessException {
         ListResult result = server.listGames(repl.authToken);
         var stringResult = new StringBuilder();
-        var gson = new Gson();
-        for (var game : result.games()) {
-            stringResult.append(gson.toJson(game)).append('\n');
+        games = result.games();
+        int id = 1;
+        for (var game : games) {
+            stringResult.append("- ").append(id);
+            stringResult.append(": ").append(game.gameName()).append("\n");
+
+            String white;
+            String black;
+            if (game.whiteUsername() == null) {white = "None";}
+            else {white = game.whiteUsername();}
+            if (game.blackUsername() == null) {black = "None";}
+            else {black = game.blackUsername();}
+            stringResult.append("\tWhite Player: ").append(white).append("\n");
+            stringResult.append("\tBlack Player: ").append(black).append("\n");
+
+            id++;
         }
         return stringResult.toString();
     }
 
     public String join(Repl repl, String... params) throws DataAccessException {
-        if (params.length == 0) {
-            server.logout(repl.authToken);
-            repl.isLoggedIn = false;
-            repl.authToken = "";
-            return "logging out";
+        if (params.length >= 2) {
+            int givenId = Integer.parseInt(params[0]);
+            int gameId = games.get(givenId).gameID();
+            String color = params[1].toUpperCase();
+            JoinRequest request = new JoinRequest(repl.authToken, color, gameId);
+            server.joinGame(request);
+            repl.isPlaying = true;
+            return "joined game: " + givenId;
         }
-        throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>. Example:\n" +
-                "login user123 pass1234");
+        throw new DataAccessException(400, "Expected: <ID> [WHITE|BLACK]. Example:\n" +
+                "join 2 white");
     }
 
     public String observe(Repl repl, String... params) throws DataAccessException {
