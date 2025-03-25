@@ -1,9 +1,11 @@
 package ui.client;
 
+import com.google.gson.Gson;
 import exception.DataAccessException;
 import model.request.CreateRequest;
 import model.request.LoginRequest;
 import model.result.CreateResult;
+import model.result.ListResult;
 import model.result.LoginResult;
 import server.ServerFacade;
 import ui.EscapeSequences;
@@ -26,10 +28,10 @@ public class PostLoginClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "create" -> create(repl, params);
-                case "list" -> list(repl, params);
+                case "list" -> list(repl);
                 case "join" -> join(repl, params);
                 case "observe" -> observe(repl, params);
-                case "logout" -> logout(repl, params);
+                case "logout" -> logout(repl);
                 case "quit" -> "quitting";
                 default -> help();
             };
@@ -46,18 +48,17 @@ public class PostLoginClient {
             return "Created game: '" + gameName + "' with id: " + result.gameID();
         }
         throw new DataAccessException(400, "Expected: <NAME>. Example:\n" +
-                "create Alex's Game");
+                "create User's Game");
     }
 
-    public String list(Repl repl, String... params) throws DataAccessException {
-        if (params.length == 0) {
-            server.logout(repl.authToken);
-            repl.isLoggedIn = false;
-            repl.authToken = "";
-            return "logging out";
+    public String list(Repl repl) throws DataAccessException {
+        ListResult result = server.listGames(repl.authToken);
+        var stringResult = new StringBuilder();
+        var gson = new Gson();
+        for (var game : result.games()) {
+            stringResult.append(gson.toJson(game)).append('\n');
         }
-        throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>. Example:\n" +
-                "login user123 pass1234");
+        return stringResult.toString();
     }
 
     public String join(Repl repl, String... params) throws DataAccessException {
@@ -82,14 +83,12 @@ public class PostLoginClient {
                 "login user123 pass1234");
     }
 
-    public String logout(Repl repl, String... params) throws DataAccessException {
-        if (params.length == 0) {
-            server.logout(repl.authToken);
-            repl.isLoggedIn = false;
-            repl.authToken = "";
-            return "logging out";
-        }
-        throw new DataAccessException(400, "Unexpected error");
+    public String logout(Repl repl) throws DataAccessException {
+
+        server.logout(repl.authToken);
+        repl.isLoggedIn = false;
+        repl.authToken = "";
+        return "logging out";
     }
 
     public String help() throws DataAccessException {
