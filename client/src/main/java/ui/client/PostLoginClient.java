@@ -6,7 +6,7 @@ import model.request.JoinRequest;
 import model.result.CreateResult;
 import model.result.ListOneGameResult;
 import model.result.ListResult;
-import sharedserver.ServerFacade;
+import ui.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
 import ui.State;

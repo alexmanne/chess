@@ -1,4 +1,4 @@
-package sharedserver;
+package ui;
 
 import model.request.*;
 import model.result.*;
@@ -6,7 +6,6 @@ import model.result.*;
 import exception.DataAccessException;
 
 import com.google.gson.Gson;
-import serverclass.Server;
 
 import java.io.*;
 import java.net.*;
@@ -14,13 +13,8 @@ import java.net.*;
 public class ServerFacade {
 
     private final String serverUrl;
-    public final Server server;
 
-    public ServerFacade() {
-        this.server = new Server();
-        var port = server.run(0);
-        System.out.println("Started HTTP server on " + port);
-        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    public ServerFacade(int port) {
         this.serverUrl = "http://localhost:" + port;
     }
 

@@ -1,6 +1,6 @@
 package ui.client;
 
-import sharedserver.ServerFacade;
+import ui.ServerFacade;
 
 public class GamePlayClient {
 

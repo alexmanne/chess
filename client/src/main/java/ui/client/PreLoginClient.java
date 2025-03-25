@@ -5,7 +5,7 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
-import sharedserver.ServerFacade;
+import ui.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
 import ui.State;
