@@ -96,16 +96,18 @@ public class PostLoginClient {
     }
 
     public String observe(Repl repl, String... params) throws DataAccessException {
-        if (params.length == 0) {
-            server.logout(repl.authToken);
-            return "logging out";
+        if (params.length >= 1) {
+            int givenId = Integer.parseInt(params[0]);
+            int gameId = games.get(givenId).gameID();
+            // Implement in phase 6
+            repl.state = State.OBSERVING;
+            return "observing game: "+ givenId;
         }
-        throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>. Example:\n" +
-                "login user123 pass1234");
+        throw new DataAccessException(400, "Expected: <ID>. Example:\n" +
+                "observe 2");
     }
 
     public String logout(Repl repl) throws DataAccessException {
-
         server.logout(repl.authToken);
         repl.state = State.LOGGEDOUT;
         repl.authToken = "";
