@@ -88,6 +88,7 @@ public class PostLoginClient {
             server.joinGame(request);
             if (color.equals("WHITE")) {
                 repl.state = State.PLAYINGWHITE;
+                GamePlayClient.drawNewWhiteBoard();
             } else {
                 repl.state = State.PLAYINGBLACK;
             }
@@ -106,6 +107,8 @@ public class PostLoginClient {
             int gameId = games.get(givenId - 1).gameID();
             // Implement in phase 6
             repl.state = State.OBSERVING;
+            String board = GamePlayClient.drawNewWhiteBoard();
+            System.out.print(board);
             return "observing game: "+ givenId;
         }
         throw new DataAccessException(400, "Expected: <ID>. Example:\n" +
