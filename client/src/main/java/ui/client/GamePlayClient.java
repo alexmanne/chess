@@ -1,13 +1,13 @@
 package ui.client;
 
-import server.ServerFacade;
+import sharedserver.ServerFacade;
 
 public class GamePlayClient {
 
     private final ServerFacade server;
 
-    public GamePlayClient(String serverUrl) {
-        server = new ServerFacade(serverUrl);
+    public GamePlayClient(ServerFacade server) {
+        this.server = server;
     }
 
     public String eval(String inputLine) {

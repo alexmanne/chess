@@ -5,21 +5,19 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.LoginResult;
 import model.result.RegisterResult;
-import server.ServerFacade;
+import sharedserver.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
 import ui.State;
 
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PreLoginClient {
 
     private final ServerFacade server;
 
-    public PreLoginClient(String serverUrl) {
-        server = new ServerFacade(serverUrl);
+    public PreLoginClient(ServerFacade server) {
+        this.server = server;
     }
 
     public String eval(String inputLine, Repl repl) {

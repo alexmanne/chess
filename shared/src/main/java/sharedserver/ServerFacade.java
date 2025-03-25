@@ -1,4 +1,4 @@
-package server;
+package sharedserver;
 
 import model.request.*;
 import model.result.*;
@@ -6,6 +6,7 @@ import model.result.*;
 import exception.DataAccessException;
 
 import com.google.gson.Gson;
+import server.Server;
 
 import java.io.*;
 import java.net.*;
@@ -13,9 +14,14 @@ import java.net.*;
 public class ServerFacade {
 
     private final String serverUrl;
+    public final Server server;
 
-    public ServerFacade(String serverUrl) {
-        this.serverUrl = serverUrl;
+    public ServerFacade() {
+        this.server = new Server();
+        var port = server.run(0);
+        System.out.println("Started HTTP server on " + port);
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        this.serverUrl = "http://localhost:" + port;
     }
 
     public RegisterResult register(RegisterRequest request) throws DataAccessException {

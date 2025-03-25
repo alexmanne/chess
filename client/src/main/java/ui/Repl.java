@@ -4,6 +4,8 @@ import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
 
+import sharedserver.ServerFacade;
+
 import java.util.Scanner;
 
 public class Repl {
@@ -14,10 +16,11 @@ public class Repl {
     public String authToken;
     public State state;
 
-    public Repl(String serverUrl) {
-        preLoginClient = new PreLoginClient(serverUrl);
-        postLoginClient = new PostLoginClient(serverUrl);
-        gamePlayClient = new GamePlayClient(serverUrl);
+    public Repl() {
+        ServerFacade server = new ServerFacade();
+        preLoginClient = new PreLoginClient(server);
+        postLoginClient = new PostLoginClient(server);
+        gamePlayClient = new GamePlayClient(server);
         state = State.LOGGEDOUT;
         authToken = "";
     }

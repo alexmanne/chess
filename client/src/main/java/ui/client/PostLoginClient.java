@@ -1,13 +1,12 @@
 package ui.client;
 
-import com.google.gson.Gson;
 import exception.DataAccessException;
 import model.request.CreateRequest;
 import model.request.JoinRequest;
 import model.result.CreateResult;
 import model.result.ListOneGameResult;
 import model.result.ListResult;
-import server.ServerFacade;
+import sharedserver.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
 import ui.State;
@@ -20,8 +19,8 @@ public class PostLoginClient {
     private final ServerFacade server;
     private ArrayList<ListOneGameResult> games;
 
-    public PostLoginClient(String serverUrl) {
-        server = new ServerFacade(serverUrl);
+    public PostLoginClient(ServerFacade server) {
+        this.server = server;
     }
 
     public String eval(String inputLine, Repl repl) {
@@ -78,6 +77,9 @@ public class PostLoginClient {
     }
 
     public String join(Repl repl, String... params) throws DataAccessException {
+        if (games == null) {
+            throw new DataAccessException(400, "Must list games first");
+        }
         if (params.length >= 2) {
             int givenId = Integer.parseInt(params[0]);
             int gameId = games.get(givenId).gameID();
@@ -96,6 +98,9 @@ public class PostLoginClient {
     }
 
     public String observe(Repl repl, String... params) throws DataAccessException {
+        if (games == null) {
+            throw new DataAccessException(400, "Must list games first");
+        }
         if (params.length >= 1) {
             int givenId = Integer.parseInt(params[0]);
             int gameId = games.get(givenId).gameID();

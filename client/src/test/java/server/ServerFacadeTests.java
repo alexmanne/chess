@@ -7,6 +7,7 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.*;
 import org.junit.jupiter.api.*;
+import sharedserver.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,15 +20,12 @@ public class ServerFacadeTests {
 
     @BeforeAll
     public static void init() {
-        server = new Server();
-        var port = server.run(0);
-        System.out.println("Started test HTTP server on " + port);
-        var url = "http://localhost:" + port;
-        facade = new ServerFacade(url);
+        facade = new ServerFacade();
     }
 
     @BeforeEach
     public void setUp() throws DataAccessException {
+        server = facade.server;
         facade.clear();
         RegisterRequest request1 = new RegisterRequest("genemann", "1234",
                 "am@gmail.com");
