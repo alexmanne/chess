@@ -1,4 +1,4 @@
-package server;
+package serverclass;
 
 import com.google.gson.Gson;
 import dataaccess.*;

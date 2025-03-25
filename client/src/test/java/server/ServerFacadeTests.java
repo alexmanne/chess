@@ -7,6 +7,7 @@ import model.request.LoginRequest;
 import model.request.RegisterRequest;
 import model.result.*;
 import org.junit.jupiter.api.*;
+import serverclass.Server;
 import sharedserver.ServerFacade;
 
 import static org.junit.jupiter.api.Assertions.*;

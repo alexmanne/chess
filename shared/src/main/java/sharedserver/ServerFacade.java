@@ -6,7 +6,7 @@ import model.result.*;
 import exception.DataAccessException;
 
 import com.google.gson.Gson;
-import server.Server;
+import serverclass.Server;
 
 import java.io.*;
 import java.net.*;
