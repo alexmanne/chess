@@ -1,4 +1,4 @@
-package server;
+package client;
 
 import exception.DataAccessException;
 import model.request.CreateRequest;
@@ -8,6 +8,7 @@ import model.request.RegisterRequest;
 import model.result.*;
 import org.junit.jupiter.api.*;
 import ui.ServerFacade;
+import server.Server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
