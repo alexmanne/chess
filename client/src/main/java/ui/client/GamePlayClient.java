@@ -6,8 +6,8 @@ import ui.ServerFacade;
 public class GamePlayClient {
 
     private final ServerFacade server;
-    private static final String blackPawn = EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.BLACK_PAWN;
-    private static final String whitePawn = EscapeSequences.SET_TEXT_COLOR_WHITE + EscapeSequences.WHITE_PAWN;
+    private static final String BLACK_PAWN = EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.BLACK_PAWN;
+    private static final String WHITE_PAWN = EscapeSequences.SET_TEXT_COLOR_WHITE + EscapeSequences.WHITE_PAWN;
 
     public GamePlayClient(ServerFacade server) {
         this.server = server;
@@ -23,12 +23,12 @@ public class GamePlayClient {
 
         builder.append(drawWhiteBoardHeader()).append("\n");
         builder.append(drawWhiteBoardBlackPieces()).append("\n");
-        builder.append(drawGreenRow(7, blackPawn)).append("\n");
+        builder.append(drawGreenRow(7, BLACK_PAWN)).append("\n");
         builder.append(drawBlueRow(6, EscapeSequences.EMPTY)).append("\n");
         builder.append(drawGreenRow(5, EscapeSequences.EMPTY)).append("\n");
         builder.append(drawBlueRow(4, EscapeSequences.EMPTY)).append("\n");
         builder.append(drawGreenRow(3, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawBlueRow(2, whitePawn)).append("\n");
+        builder.append(drawBlueRow(2, WHITE_PAWN)).append("\n");
         builder.append(drawWhiteBoardWhitePieces()).append("\n");
         builder.append(drawWhiteBoardHeader()).append("\n");
 
@@ -41,12 +41,12 @@ public class GamePlayClient {
 
         builder.append(drawBlackBoardHeader()).append("\n");
         builder.append(drawBlackBoardWhitePieces()).append("\n");
-        builder.append(drawGreenRow(2, whitePawn)).append("\n");
+        builder.append(drawGreenRow(2, WHITE_PAWN)).append("\n");
         builder.append(drawBlueRow(3, EscapeSequences.EMPTY)).append("\n");
         builder.append(drawGreenRow(4, EscapeSequences.EMPTY)).append("\n");
         builder.append(drawBlueRow(5, EscapeSequences.EMPTY)).append("\n");
         builder.append(drawGreenRow(6, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawBlueRow(7, blackPawn)).append("\n");
+        builder.append(drawBlueRow(7, BLACK_PAWN)).append("\n");
         builder.append(drawBlackBoardBlackPieces()).append("\n");
         builder.append(drawBlackBoardHeader()).append("\n");
 
