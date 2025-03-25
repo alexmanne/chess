@@ -82,17 +82,24 @@ public class PostLoginClient {
         }
         if (params.length >= 2) {
             int givenId = Integer.parseInt(params[0]);
-            int gameId = games.get(givenId - 1).gameID();
-            String color = params[1].toUpperCase();
-            JoinRequest request = new JoinRequest(repl.authToken, color, gameId);
-            server.joinGame(request);
-            if (color.equals("WHITE")) {
-                repl.state = State.PLAYINGWHITE;
-                GamePlayClient.drawNewWhiteBoard();
-            } else {
-                repl.state = State.PLAYINGBLACK;
+            try {
+                int gameId = games.get(givenId - 1).gameID();
+                String color = params[1].toUpperCase();
+                JoinRequest request = new JoinRequest(repl.authToken, color, gameId);
+                server.joinGame(request);
+                if (color.equals("WHITE")) {
+                    repl.state = State.PLAYINGWHITE;
+                    String board = GamePlayClient.drawNewWhiteBoard();
+                    System.out.print(board);
+                } else {
+                    repl.state = State.PLAYINGBLACK;
+                    String board = GamePlayClient.drawNewBlackBoard();
+                    System.out.print(board);
+                }
+                return "joined game: " + givenId;
+            } catch (IndexOutOfBoundsException ex){
+                throw new DataAccessException(400, "game ID not recognized");
             }
-            return "joined game: " + givenId;
         }
         throw new DataAccessException(400, "Expected: <ID> [WHITE|BLACK]. Example:\n" +
                 "join 2 white");
@@ -104,12 +111,17 @@ public class PostLoginClient {
         }
         if (params.length >= 1) {
             int givenId = Integer.parseInt(params[0]);
-            int gameId = games.get(givenId - 1).gameID();
-            // Implement in phase 6
-            repl.state = State.OBSERVING;
-            String board = GamePlayClient.drawNewWhiteBoard();
-            System.out.print(board);
-            return "observing game: "+ givenId;
+            try {
+                int gameId = games.get(givenId - 1).gameID();
+                // Implement in phase 6
+                repl.state = State.OBSERVING;
+                String board = GamePlayClient.drawNewWhiteBoard();
+                System.out.print(board);
+                return "observing game: "+ givenId;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new DataAccessException(400, "game ID not recognized");
+            }
+
         }
         throw new DataAccessException(400, "Expected: <ID>. Example:\n" +
                 "observe 2");
