@@ -12,7 +12,7 @@ public class Main {
 
             var chessServer = new Server();
             port = chessServer.run(port);
-            System.out.printf("Server started on port %d with %s%n", port, "Memory Access");
+            System.out.printf("Server started on port %d with %s%n", port, "SQL Access");
             return;
         } catch (Throwable ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());

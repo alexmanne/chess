@@ -14,8 +14,8 @@ public class Repl {
     public String authToken;
     public State state;
 
-    public Repl() {
-        ServerFacade server = new ServerFacade(8080);
+    public Repl(int port) {
+        ServerFacade server = new ServerFacade(port);
         preLoginClient = new PreLoginClient(server);
         postLoginClient = new PostLoginClient(server);
         gamePlayClient = new GamePlayClient(server);

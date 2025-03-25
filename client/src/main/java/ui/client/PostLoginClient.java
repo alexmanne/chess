@@ -82,7 +82,7 @@ public class PostLoginClient {
         }
         if (params.length >= 2) {
             int givenId = Integer.parseInt(params[0]);
-            int gameId = games.get(givenId).gameID();
+            int gameId = games.get(givenId - 1).gameID();
             String color = params[1].toUpperCase();
             JoinRequest request = new JoinRequest(repl.authToken, color, gameId);
             server.joinGame(request);
@@ -103,7 +103,7 @@ public class PostLoginClient {
         }
         if (params.length >= 1) {
             int givenId = Integer.parseInt(params[0]);
-            int gameId = games.get(givenId).gameID();
+            int gameId = games.get(givenId - 1).gameID();
             // Implement in phase 6
             repl.state = State.OBSERVING;
             return "observing game: "+ givenId;
