@@ -10,6 +10,7 @@ import model.result.ListResult;
 import server.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
+import ui.State;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +84,11 @@ public class PostLoginClient {
             String color = params[1].toUpperCase();
             JoinRequest request = new JoinRequest(repl.authToken, color, gameId);
             server.joinGame(request);
-            repl.isPlaying = true;
+            if (color.equals("WHITE")) {
+                repl.state = State.PLAYINGWHITE;
+            } else {
+                repl.state = State.PLAYINGBLACK;
+            }
             return "joined game: " + givenId;
         }
         throw new DataAccessException(400, "Expected: <ID> [WHITE|BLACK]. Example:\n" +
@@ -93,8 +98,6 @@ public class PostLoginClient {
     public String observe(Repl repl, String... params) throws DataAccessException {
         if (params.length == 0) {
             server.logout(repl.authToken);
-            repl.isLoggedIn = false;
-            repl.authToken = "";
             return "logging out";
         }
         throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>. Example:\n" +
@@ -104,7 +107,7 @@ public class PostLoginClient {
     public String logout(Repl repl) throws DataAccessException {
 
         server.logout(repl.authToken);
-        repl.isLoggedIn = false;
+        repl.state = State.LOGGEDOUT;
         repl.authToken = "";
         return "logging out";
     }

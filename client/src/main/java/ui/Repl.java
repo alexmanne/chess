@@ -3,7 +3,6 @@ package ui;
 import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
-import ui.EscapeSequences;
 
 import java.util.Scanner;
 
@@ -13,15 +12,13 @@ public class Repl {
     private final PostLoginClient postLoginClient;
     private final GamePlayClient gamePlayClient;
     public String authToken;
-    public boolean isLoggedIn;
-    public boolean isPlaying;
+    public State state;
 
     public Repl(String serverUrl) {
         preLoginClient = new PreLoginClient(serverUrl);
         postLoginClient = new PostLoginClient(serverUrl);
         gamePlayClient = new GamePlayClient(serverUrl);
-        isLoggedIn = false;
-        isPlaying = false;
+        state = State.LOGGEDOUT;
         authToken = "";
     }
 
@@ -30,12 +27,12 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quitting")) {
-            if (this.isPlaying) {
-                result = runGamePlay(scanner);
-            } else if (this.isLoggedIn) {
+            if (state == State.LOGGEDOUT) {
+                result = runLoggedOut(scanner);
+            } else if (state == State.LOGGEDIN) {
                 result = runLoggedIn(scanner);
             } else {
-                result = runLoggedOut(scanner);
+                result = runGamePlay(scanner);
             }
         }
     }
@@ -105,7 +102,7 @@ public class Repl {
     }
 
     public void printGamePlayPrompt() {
-        System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_WHITE + "[PLAYING] >>> ");
+        System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_WHITE + "[IN GAME] >>> ");
     }
 
 

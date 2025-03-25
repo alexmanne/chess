@@ -8,6 +8,7 @@ import model.result.RegisterResult;
 import server.ServerFacade;
 import ui.EscapeSequences;
 import ui.Repl;
+import ui.State;
 
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class PreLoginClient {
             System.out.print(EscapeSequences.SET_TEXT_COLOR_RED);
             RegisterRequest request = new RegisterRequest(username, password, email);
             RegisterResult result = server.register(request);
-            repl.isLoggedIn = true;
+            repl.state = State.LOGGEDIN;
             repl.authToken = result.authToken();
             return "logging in " + request.username();
         }
@@ -59,7 +60,7 @@ public class PreLoginClient {
             String password = params[1];
             LoginRequest request = new LoginRequest(username, password);
             LoginResult result = server.login(request);
-            repl.isLoggedIn = true;
+            repl.state = State.LOGGEDIN;
             repl.authToken = result.authToken();
             return "logging in " + result.username();
         }
