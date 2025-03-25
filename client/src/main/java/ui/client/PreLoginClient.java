@@ -23,7 +23,7 @@ public class PreLoginClient {
 
     public String eval(String inputLine, Repl repl) {
         try {
-            var tokens = inputLine.toLowerCase().split(" ");
+            var tokens = inputLine.split(" ");
             var cmd = (tokens.length > 0) ? tokens[0].toLowerCase() : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
@@ -61,7 +61,7 @@ public class PreLoginClient {
             LoginResult result = server.login(request);
             repl.isLoggedIn = true;
             repl.authToken = result.authToken();
-            return "logging in " + request.username();
+            return "logging in " + result.username();
         }
         throw new DataAccessException(400, "Expected: <USERNAME> <PASSWORD>. Example:\n" +
                                            "login user123 pass1234");
