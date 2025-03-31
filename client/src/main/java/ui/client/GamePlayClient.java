@@ -1,15 +1,14 @@
 package ui.client;
 
-import ui.EscapeSequences;
 import ui.ServerFacade;
 import ui.Repl;
 import ui.State;
 
+import static ui.EscapeSequences.*;
+
 public class GamePlayClient {
 
     private final ServerFacade server;
-    private static final String BLACK_PAWN = EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.BLACK_PAWN;
-    private static final String WHITE_PAWN = EscapeSequences.SET_TEXT_COLOR_WHITE + EscapeSequences.WHITE_PAWN;
 
     public GamePlayClient(ServerFacade server) {
         this.server = server;
@@ -29,10 +28,10 @@ public class GamePlayClient {
         builder.append(drawWhiteBoardHeader()).append("\n");
         builder.append(drawWhiteBoardBlackPieces()).append("\n");
         builder.append(drawGreenRow(7, BLACK_PAWN)).append("\n");
-        builder.append(drawBlueRow(6, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawGreenRow(5, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawBlueRow(4, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawGreenRow(3, EscapeSequences.EMPTY)).append("\n");
+        builder.append(drawBlueRow(6, EMPTY)).append("\n");
+        builder.append(drawGreenRow(5, EMPTY)).append("\n");
+        builder.append(drawBlueRow(4, EMPTY)).append("\n");
+        builder.append(drawGreenRow(3, EMPTY)).append("\n");
         builder.append(drawBlueRow(2, WHITE_PAWN)).append("\n");
         builder.append(drawWhiteBoardWhitePieces()).append("\n");
         builder.append(drawWhiteBoardHeader()).append("\n");
@@ -47,10 +46,10 @@ public class GamePlayClient {
         builder.append(drawBlackBoardHeader()).append("\n");
         builder.append(drawBlackBoardWhitePieces()).append("\n");
         builder.append(drawGreenRow(2, WHITE_PAWN)).append("\n");
-        builder.append(drawBlueRow(3, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawGreenRow(4, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawBlueRow(5, EscapeSequences.EMPTY)).append("\n");
-        builder.append(drawGreenRow(6, EscapeSequences.EMPTY)).append("\n");
+        builder.append(drawBlueRow(3, EMPTY)).append("\n");
+        builder.append(drawGreenRow(4, EMPTY)).append("\n");
+        builder.append(drawBlueRow(5, EMPTY)).append("\n");
+        builder.append(drawGreenRow(6, EMPTY)).append("\n");
         builder.append(drawBlueRow(7, BLACK_PAWN)).append("\n");
         builder.append(drawBlackBoardBlackPieces()).append("\n");
         builder.append(drawBlackBoardHeader()).append("\n");
@@ -59,102 +58,102 @@ public class GamePlayClient {
     }
 
     private static String drawBlueRow(int rowNum, String fill) {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE +
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
                 " " + rowNum + " " +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREY+ EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_DARK_GREY+ SET_TEXT_COLOR_WHITE +
                 " " + rowNum + " " +
-                EscapeSequences.RESET_BG_COLOR;
+                RESET_BG_COLOR;
     }
 
     private static String drawGreenRow(int rowNum, String fill) {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE +
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
                 " " + rowNum + " " +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + fill +
-                EscapeSequences.SET_BG_COLOR_BLUE + fill +
-                EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREEN + fill +
+                SET_BG_COLOR_BLUE + fill +
+                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
                 " " + rowNum + " " +
-                EscapeSequences.RESET_BG_COLOR;
+                RESET_BG_COLOR;
     }
 
     private static String drawWhiteBoardWhitePieces() {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE + " 1 " +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_ROOK +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_BISHOP +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_QUEEN +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_KING +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_BISHOP +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_ROOK +
-                EscapeSequences.SET_BG_COLOR_DARK_GREY + " 1 " +
-                EscapeSequences.RESET_BG_COLOR;
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 1 " +
+                SET_BG_COLOR_DARK_GREEN + WHITE_ROOK +
+                SET_BG_COLOR_BLUE + WHITE_KNIGHT +
+                SET_BG_COLOR_DARK_GREEN + WHITE_BISHOP +
+                SET_BG_COLOR_BLUE + WHITE_QUEEN +
+                SET_BG_COLOR_DARK_GREEN + WHITE_KING +
+                SET_BG_COLOR_BLUE + WHITE_BISHOP +
+                SET_BG_COLOR_DARK_GREEN + WHITE_KNIGHT +
+                SET_BG_COLOR_BLUE + WHITE_ROOK +
+                SET_BG_COLOR_DARK_GREY + " 1 " +
+                RESET_BG_COLOR;
     }
 
     private static String drawWhiteBoardBlackPieces() {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE + " 8 " +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.BLACK_ROOK +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_BISHOP +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_QUEEN +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_KING +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_BISHOP +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_ROOK +
-                EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE + " 8 " +
-                EscapeSequences.RESET_BG_COLOR;
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+                SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + BLACK_ROOK +
+                SET_BG_COLOR_DARK_GREEN + BLACK_KNIGHT +
+                SET_BG_COLOR_BLUE + BLACK_BISHOP +
+                SET_BG_COLOR_DARK_GREEN + BLACK_QUEEN +
+                SET_BG_COLOR_BLUE + BLACK_KING +
+                SET_BG_COLOR_DARK_GREEN + BLACK_BISHOP +
+                SET_BG_COLOR_BLUE + BLACK_KNIGHT +
+                SET_BG_COLOR_DARK_GREEN + BLACK_ROOK +
+                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+                RESET_BG_COLOR;
     }
 
     private static String drawWhiteBoardHeader() {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE +
-                EscapeSequences.EMPTY + " a  b  c  d  e  f  g  h " + EscapeSequences.EMPTY +
-                EscapeSequences.RESET_BG_COLOR;
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                EMPTY + " a  b  c  d  e  f  g  h " + EMPTY +
+                RESET_BG_COLOR;
     }
 
     private static String drawBlackBoardWhitePieces() {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE + " 1 " +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_ROOK +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_BISHOP +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_QUEEN +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_KING +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_BISHOP +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.WHITE_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.WHITE_ROOK +
-                EscapeSequences.SET_BG_COLOR_DARK_GREY + " 1 " +
-                EscapeSequences.RESET_BG_COLOR;
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 1 " +
+                SET_BG_COLOR_BLUE + WHITE_ROOK +
+                SET_BG_COLOR_DARK_GREEN + WHITE_KNIGHT +
+                SET_BG_COLOR_BLUE + WHITE_BISHOP +
+                SET_BG_COLOR_DARK_GREEN + WHITE_QUEEN +
+                SET_BG_COLOR_BLUE + WHITE_KING +
+                SET_BG_COLOR_DARK_GREEN + WHITE_BISHOP +
+                SET_BG_COLOR_BLUE + WHITE_KNIGHT +
+                SET_BG_COLOR_DARK_GREEN + WHITE_ROOK +
+                SET_BG_COLOR_DARK_GREY + " 1 " +
+                RESET_BG_COLOR;
     }
 
     private static String drawBlackBoardBlackPieces() {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE + " 8 " +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.SET_TEXT_COLOR_BLACK + EscapeSequences.BLACK_ROOK +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_BISHOP +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_QUEEN +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_KING +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_BISHOP +
-                EscapeSequences.SET_BG_COLOR_DARK_GREEN + EscapeSequences.BLACK_KNIGHT +
-                EscapeSequences.SET_BG_COLOR_BLUE + EscapeSequences.BLACK_ROOK +
-                EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE + " 8 " +
-                EscapeSequences.RESET_BG_COLOR;
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+                SET_BG_COLOR_DARK_GREEN + SET_TEXT_COLOR_BLACK + BLACK_ROOK +
+                SET_BG_COLOR_BLUE + BLACK_KNIGHT +
+                SET_BG_COLOR_DARK_GREEN + BLACK_BISHOP +
+                SET_BG_COLOR_BLUE + BLACK_QUEEN +
+                SET_BG_COLOR_DARK_GREEN + BLACK_KING +
+                SET_BG_COLOR_BLUE + BLACK_BISHOP +
+                SET_BG_COLOR_DARK_GREEN + BLACK_KNIGHT +
+                SET_BG_COLOR_BLUE + BLACK_ROOK +
+                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+                RESET_BG_COLOR;
     }
 
     private static String drawBlackBoardHeader() {
-        return EscapeSequences.SET_BG_COLOR_DARK_GREY + EscapeSequences.SET_TEXT_COLOR_WHITE +
-                EscapeSequences.EMPTY + " h  g  f  e  d  c  b  a " + EscapeSequences.EMPTY +
-                EscapeSequences.RESET_BG_COLOR;
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                EMPTY + " h  g  f  e  d  c  b  a " + EMPTY +
+                RESET_BG_COLOR;
     }
 }
