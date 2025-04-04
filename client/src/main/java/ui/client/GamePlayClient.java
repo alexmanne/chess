@@ -50,7 +50,7 @@ public class GamePlayClient {
     }
 
     private String redraw(Repl repl) {
-        ws.
+        return null;
     }
 
     private String leave(Repl repl) throws DataAccessException {
