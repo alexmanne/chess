@@ -26,7 +26,7 @@ public class GamePlayClient implements ServerMessageObserver {
     public GamePlayClient(ServerFacade server, int port) throws DataAccessException {
         this.server = server;
         String serverUrl = "http://localhost:" + port;
-        ws = new WebSocketFacade(serverUrl);
+        ws = new WebSocketFacade(serverUrl, this);
     }
 
     public String eval(String inputLine, Repl repl) {

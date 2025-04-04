@@ -35,8 +35,8 @@ public class WebSocketHandler {
                 case LEAVE -> leave(session, username, command);
                 case RESIGN -> resign(session, username, command);
             }
-        } catch (DataAccessException ex) {
-            sendError(session.getRemote(), new DataAccessException(400, "Error: unauthorized"));
+//        } catch (DataAccessException ex) {
+//            sendError(session.getRemote(), new DataAccessException(400, "Error: unauthorized"));
         } catch (Throwable ex) {
             sendError(session.getRemote(), new DataAccessException(400, "Error: " + ex.getMessage()));
         }
