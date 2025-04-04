@@ -4,11 +4,13 @@ import exception.DataAccessException;
 import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
+import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
+import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements ServerMessageObserver {
 
     private final PreLoginClient preLoginClient;
     private final PostLoginClient postLoginClient;
@@ -20,7 +22,7 @@ public class Repl {
         ServerFacade server = new ServerFacade(port);
         preLoginClient = new PreLoginClient(server);
         postLoginClient = new PostLoginClient(server);
-        gamePlayClient = new GamePlayClient(server, port);
+        gamePlayClient = new GamePlayClient(server, this, port);
         state = State.LOGGEDOUT;
         authToken = "";
     }
@@ -108,5 +110,19 @@ public class Repl {
         System.out.print("\n" + EscapeSequences.SET_TEXT_COLOR_WHITE + "[IN GAME] >>> ");
     }
 
+    @Override
+    public void notify(ServerMessage serverMessage) {
+        switch (serverMessage.getServerMessageType()) {
+            case NOTIFICATION -> displayNotification(serverMessage);
+            case ERROR -> displayError(serverMessage);
+            case LOAD_GAME -> loadgame(serverMessage);
+        }
+    }
+
+    void displayNotification(ServerMessage serverMessage) {}
+
+    void displayError(ServerMessage serverMessage) {}
+
+    void loadgame(ServerMessage serverMessage) {}
 
 }

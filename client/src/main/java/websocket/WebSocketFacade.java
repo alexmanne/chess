@@ -12,14 +12,17 @@ import java.net.URISyntaxException;
 public class WebSocketFacade extends Endpoint {
 
     Session session;
+    ServerMessageObserver observer;
 
-    public WebSocketFacade(String url, ServerMessageObserver gameClient) throws DataAccessException {
+
+    public WebSocketFacade(String url, ServerMessageObserver observer) throws DataAccessException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
+            this.observer = observer;
 
             //set message handler
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
@@ -27,9 +30,9 @@ public class WebSocketFacade extends Endpoint {
                 public void onMessage(String message) {
                     try {
                         ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                        gameClient.notify(serverMessage);
+                        observer.notify(serverMessage);
                     } catch (Exception ex) {
-                        gameClient.notify(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
+                        observer.notify(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
                     }
                 }
             });
@@ -37,10 +40,6 @@ public class WebSocketFacade extends Endpoint {
         } catch (DeploymentException | IOException | URISyntaxException ex) {
             throw new DataAccessException(500, ex.getMessage());
         }
-    }
-
-    public void send(String msg) throws Exception {
-        this.session.getBasicRemote().sendText(msg);
     }
 
     @Override

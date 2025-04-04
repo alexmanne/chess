@@ -2,6 +2,7 @@ package ui.client;
 
 import chess.ChessGame;
 import exception.DataAccessException;
+import ui.EscapeSequences;
 import ui.ServerFacade;
 import ui.Repl;
 import ui.State;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
 
-public class GamePlayClient implements ServerMessageObserver {
+public class GamePlayClient {
 
     private final ServerFacade server;
     private ChessGame game;
@@ -23,10 +24,10 @@ public class GamePlayClient implements ServerMessageObserver {
     private static ArrayList<String> whitePawnRow;
     private static ArrayList<String> blackPawnRow;
 
-    public GamePlayClient(ServerFacade server, int port) throws DataAccessException {
+    public GamePlayClient(ServerFacade server, ServerMessageObserver observer, int port) throws DataAccessException {
         this.server = server;
         String serverUrl = "http://localhost:" + port;
-        ws = new WebSocketFacade(serverUrl, this);
+        ws = new WebSocketFacade(serverUrl, observer);
     }
 
     public String eval(String inputLine, Repl repl) {
@@ -49,7 +50,7 @@ public class GamePlayClient implements ServerMessageObserver {
     }
 
     private String redraw(Repl repl) {
-        return null;
+        ws.
     }
 
     private String leave(Repl repl) throws DataAccessException {
@@ -69,7 +70,44 @@ public class GamePlayClient implements ServerMessageObserver {
     }
 
     private String help() {
-        return null;
+        return EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + EscapeSequences.SET_TEXT_ITALIC +
+                "Here are your options:\n" +
+
+                // redraw
+                EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.RESET_TEXT_ITALIC +
+                "\tredraw " +
+                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                "- redraw the chess board\n" +
+
+                // leave
+                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                "\tleave " +
+                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                "- leave the game\n" +
+
+                // move
+                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                "\tmove <STARTING POSITION> <ENDING POSITION> " +
+                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                "- make a move\n" +
+
+                // resign
+                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                "\tresign " +
+                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                "- forfeit the game\n" +
+
+                // highlight
+                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                "\thighlight " +
+                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                "- highlight the possible moves\n" +
+
+                // help
+                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                "\thelp " +
+                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                "- print possible commands";
     }
 
     public String drawBlackBoard () {
@@ -240,18 +278,4 @@ public class GamePlayClient implements ServerMessageObserver {
                 RESET_BG_COLOR;
     }
 
-    @Override
-    public void notify(ServerMessage serverMessage) {
-        switch (serverMessage.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(serverMessage);
-            case ERROR -> displayError(serverMessage);
-            case LOAD_GAME -> loadgame(serverMessage);
-        }
-    }
-
-    void displayNotification(ServerMessage serverMessage) {}
-
-    void displayError(ServerMessage serverMessage) {}
-
-    void loadgame(ServerMessage serverMessage) {}
 }
