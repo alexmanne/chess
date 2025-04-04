@@ -18,6 +18,7 @@ public class PreLoginClient {
 
     public PreLoginClient(ServerFacade server) {
         this.server = server;
+
     }
 
     public String eval(String inputLine, Repl repl) {

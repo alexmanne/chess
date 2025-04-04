@@ -1,8 +1,10 @@
 package ui;
 
+import exception.DataAccessException;
 import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
+import websocket.WebSocketFacade;
 
 import java.util.Scanner;
 
@@ -14,11 +16,11 @@ public class Repl {
     public String authToken;
     public State state;
 
-    public Repl(int port) {
+    public Repl(int port) throws DataAccessException {
         ServerFacade server = new ServerFacade(port);
         preLoginClient = new PreLoginClient(server);
         postLoginClient = new PostLoginClient(server);
-        gamePlayClient = new GamePlayClient(server);
+        gamePlayClient = new GamePlayClient(server, port);
         state = State.LOGGEDOUT;
         authToken = "";
     }

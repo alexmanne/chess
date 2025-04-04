@@ -118,6 +118,7 @@ public class ChessBoard {
         if (obj == null) {
             return false;
         }
+        System.out.print(obj);
         if (obj == this) {
             return true;
         }

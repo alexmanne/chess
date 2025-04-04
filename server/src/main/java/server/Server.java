@@ -6,6 +6,7 @@ import exception.DataAccessException;
 import model.request.*;
 import model.result.CreateResult;
 import model.result.ListResult;
+import server.websocket.WebSocketHandler;
 import service.*;
 import spark.*;
 
@@ -27,6 +28,8 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", WebSocketHandler.class);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
