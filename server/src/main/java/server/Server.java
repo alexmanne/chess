@@ -14,10 +14,11 @@ public class Server {
 
     private final UserService userService;
     private final GameService gameService;
+    private AuthDao authDB;
 
     public Server() {
         UserDao userDB = new MySQLUserDAO();
-        AuthDao authDB = new MySQLAuthDao();
+        authDB = new MySQLAuthDao();
         GameDao gameDB = new MySQLGameDao();
 
         this.userService = new UserService(userDB, authDB, gameDB);
@@ -29,7 +30,9 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        Spark.webSocket("/ws", WebSocketHandler.class);
+        WebSocketHandler handler = new WebSocketHandler(authDB);
+
+        Spark.webSocket("/ws", handler);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);

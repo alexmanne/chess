@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataaccess.AuthDao;
 import dataaccess.DatabaseManager;
 import exception.DataAccessException;
+import model.AuthData;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -17,14 +18,20 @@ import java.util.Timer;
 @WebSocket
 public class WebSocketHandler {
 
-//    private final ConnectionManager connections = new ConnectionManager();
+    private final ConnectionManager connections = new ConnectionManager();
+    private AuthDao authDB;
+
+    public WebSocketHandler(AuthDao authDB) {
+        this.authDB = authDB;
+    }
 //
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
         try {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
-            String username = "FIX THIS";
+            AuthData authData = authDB.getAuth(command.getAuthToken());
+            String username = authData.username();
 
 //             Make sure it is in the connection manager map
             saveSession(command.getGameID(), session);
