@@ -20,18 +20,22 @@ import static ui.EscapeSequences.*;
 public class GamePlayClient {
 
     private WebSocketFacade ws;
+    private boolean isConnected;
     private static ArrayList<String> emptyRow;
     private static ArrayList<String> whitePawnRow;
     private static ArrayList<String> blackPawnRow;
 
-    public GamePlayClient(Repl observer, int port) throws DataAccessException {
+    public GamePlayClient(ServerMessageObserver observer, int port) throws DataAccessException {
         String serverUrl = "http://localhost:" + port;
         ws = new WebSocketFacade(serverUrl, observer);
-        ws.connectChess(observer.authToken, observer.gameID);
     }
 
     public String eval(String inputLine, Repl repl) {
         try {
+            if (!isConnected) {
+                ws.connectChess(repl.authToken, repl.gameID);
+                isConnected = true;
+            }
             var tokens = inputLine.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -59,6 +63,7 @@ public class GamePlayClient {
         repl.gameID = 0;
         repl.state = State.LOGGEDIN;
         repl.game = null;
+        isConnected = false;
         return String.format("%s left the game", repl.username);
     }
 
@@ -84,6 +89,7 @@ public class GamePlayClient {
         repl.gameID = 0;
         repl.state = State.LOGGEDIN;
         repl.game = null;
+        isConnected = false;
         return String.format("%s resigned from the game", repl.username);
     }
 

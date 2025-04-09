@@ -119,7 +119,7 @@ public class Repl implements ServerMessageObserver {
         switch (serverMessage.getServerMessageType()) {
             case NOTIFICATION -> displayNotification(serverMessage);
             case ERROR -> displayError(serverMessage);
-            case LOAD_GAME -> loadgame(serverMessage);
+            case LOAD_GAME -> loadGame(serverMessage);
         }
     }
 
@@ -127,6 +127,6 @@ public class Repl implements ServerMessageObserver {
 
     void displayError(ServerMessage serverMessage) {}
 
-    void loadgame(ServerMessage serverMessage) {}
+    void loadGame(ServerMessage serverMessage) {}
 
 }
