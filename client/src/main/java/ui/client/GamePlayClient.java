@@ -17,15 +17,12 @@ import static ui.EscapeSequences.*;
 
 public class GamePlayClient {
 
-    private final ServerFacade server;
-    private ChessGame game;
     private WebSocketFacade ws;
     private static ArrayList<String> emptyRow;
     private static ArrayList<String> whitePawnRow;
     private static ArrayList<String> blackPawnRow;
 
     public GamePlayClient(ServerFacade server, ServerMessageObserver observer, int port) throws DataAccessException {
-        this.server = server;
         String serverUrl = "http://localhost:" + port;
         ws = new WebSocketFacade(serverUrl, observer);
     }
@@ -58,7 +55,7 @@ public class GamePlayClient {
         repl.authToken = null;
         repl.gameID = 0;
         repl.state = State.LOGGEDIN;
-        game = null;
+        repl.game = null;
         return String.format("%s left the game", repl.username);
     }
 
@@ -67,7 +64,12 @@ public class GamePlayClient {
     }
 
     private String resign(Repl repl) throws DataAccessException {
-        return null;
+        ws.resign(repl.authToken, repl.gameID);
+        repl.authToken = null;
+        repl.gameID = 0;
+        repl.state = State.LOGGEDIN;
+        repl.game = null;
+        return String.format("%s resigned from the game", repl.username);
     }
 
     private String highlight(Repl repl, String[] params) throws DataAccessException {
