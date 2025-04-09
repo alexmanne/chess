@@ -39,11 +39,11 @@ public class PreLoginClient {
 
     public String register(Repl repl, String... params) throws DataAccessException {
         if (params.length >= 3) {
-            String username = params[0];
+            repl.username = params[0];
             String password = params[1];
             String email = params[2];
             System.out.print(EscapeSequences.SET_TEXT_COLOR_RED);
-            RegisterRequest request = new RegisterRequest(username, password, email);
+            RegisterRequest request = new RegisterRequest(repl.username, password, email);
             RegisterResult result = server.register(request);
             repl.state = State.LOGGEDIN;
             repl.authToken = result.authToken();
@@ -55,9 +55,9 @@ public class PreLoginClient {
 
     public String login(Repl repl, String... params) throws DataAccessException {
         if (params.length >= 2) {
-            String username = params[0];
+            repl.username = params[0];
             String password = params[1];
-            LoginRequest request = new LoginRequest(username, password);
+            LoginRequest request = new LoginRequest(repl.username, password);
             LoginResult result = server.login(request);
             repl.state = State.LOGGEDIN;
             repl.authToken = result.authToken();

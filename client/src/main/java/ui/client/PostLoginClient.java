@@ -83,9 +83,9 @@ public class PostLoginClient {
         if (params.length >= 2) {
             int givenId = Integer.parseInt(params[0]);
             try {
-                int gameId = games.get(givenId - 1).gameID();
+                repl.gameID = games.get(givenId - 1).gameID();
                 String color = params[1].toUpperCase();
-                JoinRequest request = new JoinRequest(repl.authToken, color, gameId);
+                JoinRequest request = new JoinRequest(repl.authToken, color, repl.gameID);
                 server.joinGame(request);
                 if (color.equals("WHITE")) {
                     repl.state = State.PLAYINGWHITE;
@@ -112,8 +112,7 @@ public class PostLoginClient {
         if (params.length >= 1) {
             int givenId = Integer.parseInt(params[0]);
             try {
-                int gameId = games.get(givenId - 1).gameID();
-                // Implement in phase 6
+                repl.gameID = games.get(givenId - 1).gameID();
                 repl.state = State.OBSERVING;
                 String board = GamePlayClient.drawNewWhiteBoard();
                 System.out.print(board);
@@ -130,7 +129,8 @@ public class PostLoginClient {
     public String logout(Repl repl) throws DataAccessException {
         server.logout(repl.authToken);
         repl.state = State.LOGGEDOUT;
-        repl.authToken = "";
+        repl.authToken = null;
+        repl.username = null;
         return "logging out";
     }
 

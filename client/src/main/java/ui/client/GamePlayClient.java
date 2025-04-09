@@ -54,7 +54,12 @@ public class GamePlayClient {
     }
 
     private String leave(Repl repl) throws DataAccessException {
-        return null;
+        ws.leave(repl.authToken, repl.gameID);
+        repl.authToken = null;
+        repl.gameID = 0;
+        repl.state = State.LOGGEDIN;
+        game = null;
+        return String.format("%s left the game", repl.username);
     }
 
     private String move(Repl repl, String[] params) throws DataAccessException {

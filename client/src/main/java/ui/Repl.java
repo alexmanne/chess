@@ -16,6 +16,8 @@ public class Repl implements ServerMessageObserver {
     private final PostLoginClient postLoginClient;
     private final GamePlayClient gamePlayClient;
     public String authToken;
+    public String username;
+    public int gameID;
     public State state;
 
     public Repl(int port) throws DataAccessException {

@@ -19,7 +19,7 @@ import java.util.Timer;
 public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
-    private AuthDao authDB;
+    private final AuthDao authDB;
 
     public WebSocketHandler(AuthDao authDB) {
         this.authDB = authDB;
@@ -30,11 +30,15 @@ public class WebSocketHandler {
         try {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
+            if (command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)) {
+                command = new Gson().fromJson(message, MakeMoveCommand.class);
+            }
+
             AuthData authData = authDB.getAuth(command.getAuthToken());
             String username = authData.username();
 
 //             Make sure it is in the connection manager map
-            saveSession(command.getGameID(), session);
+            saveSession(username, session);
 
             switch (command.getCommandType()) {
                 case CONNECT -> connect(session, username, command);
@@ -42,8 +46,8 @@ public class WebSocketHandler {
                 case LEAVE -> leave(session, username, command);
                 case RESIGN -> resign(session, username, command);
             }
-//        } catch (DataAccessException ex) {
-//            sendError(session.getRemote(), new DataAccessException(400, "Error: unauthorized"));
+        } catch (DataAccessException ex) {
+            sendError(session.getRemote(), ex);
         } catch (Throwable ex) {
             sendError(session.getRemote(), new DataAccessException(400, "Error: " + ex.getMessage()));
         }
@@ -61,10 +65,12 @@ public class WebSocketHandler {
     private void resign(Session session, String username, UserGameCommand command) throws IOException {
     }
 
-    private void saveSession(int gameId, Session session) {
+    private void saveSession(String username, Session session) {
+        connections.add(username, session);
     }
 
     private void sendError(RemoteEndpoint remoteEndpoint, DataAccessException exception) {
+
     }
 
 }
