@@ -1,6 +1,8 @@
 package ui.client;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import exception.DataAccessException;
 import ui.EscapeSequences;
 import ui.ServerFacade;
@@ -60,7 +62,19 @@ public class GamePlayClient {
     }
 
     private String move(Repl repl, String[] params) throws DataAccessException {
-        return null;
+        String errorMessage = "Expected: <STARTING POSITION> <ENDING POSITION>. Example:\nd2 d4";
+        if (params.length >= 1) {
+            try {
+                ChessPosition startPosition = serializePosition(params[0]);
+                ChessPosition endPosition = serializePosition(params[1]);
+                ChessMove chessMove = new ChessMove(startPosition, endPosition);
+                ws.makeMove(repl.authToken, repl.gameID, chessMove);
+                return String.format("Made move: %s -> %s", params[0], params[1]);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new DataAccessException(400, errorMessage);
+            }
+        }
+        throw new DataAccessException(400, errorMessage);
     }
 
     private String resign(Repl repl) throws DataAccessException {
@@ -76,44 +90,74 @@ public class GamePlayClient {
         return null;
     }
 
+    private ChessPosition serializePosition(String stringPosition) throws DataAccessException {
+        String errorMessage = "Expected position is a letter than a number. Example:\nd2";
+        ArrayList<String> viableLetters = new ArrayList<>(Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h"));
+        ArrayList<String> viableNumbers = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
+
+        if (stringPosition.length() != 2) {
+            throw new DataAccessException(400, errorMessage);
+        }
+        String letter = stringPosition.substring(0, 1);
+        String number = stringPosition.substring(1, 2);
+        if (!viableLetters.contains(letter) || !viableNumbers.contains(number)){
+            throw new DataAccessException(400, errorMessage);
+        }
+        // a1 is ChessPosition(1, 1)
+        // f2 is ChessPosition(2, 6)
+        int row = Integer.parseInt(number);
+        int col = switch (letter) {
+            case "a" -> 1;
+            case "b" -> 2;
+            case "c" -> 3;
+            case "d" -> 4;
+            case "e" -> 5;
+            case "f" -> 6;
+            case "g" -> 7;
+            case "h" -> 8;
+            default -> throw new DataAccessException(400, errorMessage);
+        };
+        return new ChessPosition(row, col);
+    }
+
     private String help() {
-        return EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + EscapeSequences.SET_TEXT_ITALIC +
+        return SET_TEXT_COLOR_LIGHT_GREY + SET_TEXT_ITALIC +
                 "Here are your options:\n" +
 
                 // redraw
-                EscapeSequences.SET_TEXT_COLOR_BLUE + EscapeSequences.RESET_TEXT_ITALIC +
+                SET_TEXT_COLOR_BLUE + RESET_TEXT_ITALIC +
                 "\tredraw " +
-                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_TEXT_COLOR_WHITE +
                 "- redraw the chess board\n" +
 
                 // leave
-                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                SET_TEXT_COLOR_BLUE +
                 "\tleave " +
-                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_TEXT_COLOR_WHITE +
                 "- leave the game\n" +
 
                 // move
-                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                SET_TEXT_COLOR_BLUE +
                 "\tmove <STARTING POSITION> <ENDING POSITION> " +
-                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_TEXT_COLOR_WHITE +
                 "- make a move\n" +
 
                 // resign
-                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                SET_TEXT_COLOR_BLUE +
                 "\tresign " +
-                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_TEXT_COLOR_WHITE +
                 "- forfeit the game\n" +
 
                 // highlight
-                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                SET_TEXT_COLOR_BLUE +
                 "\thighlight " +
-                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_TEXT_COLOR_WHITE +
                 "- highlight the possible moves\n" +
 
                 // help
-                EscapeSequences.SET_TEXT_COLOR_BLUE +
+                SET_TEXT_COLOR_BLUE +
                 "\thelp " +
-                EscapeSequences.SET_TEXT_COLOR_WHITE +
+                SET_TEXT_COLOR_WHITE +
                 "- print possible commands";
     }
 
