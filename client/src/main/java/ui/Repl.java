@@ -26,7 +26,7 @@ public class Repl implements ServerMessageObserver {
         ServerFacade server = new ServerFacade(port);
         preLoginClient = new PreLoginClient(server);
         postLoginClient = new PostLoginClient(server);
-        gamePlayClient = new GamePlayClient(server, this, port);
+        gamePlayClient = new GamePlayClient(this, port);
         state = State.LOGGEDOUT;
         authToken = "";
     }

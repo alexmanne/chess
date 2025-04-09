@@ -24,9 +24,10 @@ public class GamePlayClient {
     private static ArrayList<String> whitePawnRow;
     private static ArrayList<String> blackPawnRow;
 
-    public GamePlayClient(ServerFacade server, ServerMessageObserver observer, int port) throws DataAccessException {
+    public GamePlayClient(Repl observer, int port) throws DataAccessException {
         String serverUrl = "http://localhost:" + port;
         ws = new WebSocketFacade(serverUrl, observer);
+        ws.connectChess(observer.authToken, observer.gameID);
     }
 
     public String eval(String inputLine, Repl repl) {
