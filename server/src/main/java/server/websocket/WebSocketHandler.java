@@ -51,7 +51,7 @@ public class WebSocketHandler {
                 case CONNECT -> connect(session, username, command);
                 case MAKE_MOVE -> make_move(session, username, command);
                 case LEAVE -> leave(username, command);
-                case RESIGN -> resign(session, username, command);
+                case RESIGN -> resign(username, command);
             }
         } catch (DataAccessException ex) {
             sendError(ex);
@@ -109,7 +109,26 @@ public class WebSocketHandler {
         }
     }
 
-    private void resign(Session session, String username, UserGameCommand command) throws DataAccessException {
+    private void resign(String username, UserGameCommand command) throws DataAccessException {
+        try {
+            GameData gameData = gameDB.getGame(command.getGameID());
+            String winner;
+            if (username.equals(gameData.whiteUsername())) {
+                winner = gameData.blackUsername();
+            } else if (username.equals(gameData.blackUsername())) {
+                winner = gameData.whiteUsername();
+            } else {
+                winner = "No one";
+            }
+            String message = String.format("%s left the game. %s won!", username, winner);
+            ServerMessage notification = new NotificationMessage(message);
+            connections.broadcast(username, notification);
+        } catch (DataAccessException ex) {
+            throw ex;
+        }
+        catch (Exception ex) {
+            throw new DataAccessException(500, ex.getMessage());
+        }
     }
 
     private void saveSession(String username, Session session) {
