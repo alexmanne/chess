@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import exception.DataAccessException;
 import model.GameData;
 import ui.client.GamePlayClient;
@@ -8,6 +9,10 @@ import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
 import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGame;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.util.Scanner;
@@ -116,18 +121,23 @@ public class Repl implements ServerMessageObserver {
     }
 
     @Override
-    public void notify(ServerMessage serverMessage) {
+    public void notify(String message) {
+        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+
         switch (serverMessage.getServerMessageType()) {
-            case NOTIFICATION -> displayNotification(serverMessage);
-            case ERROR -> displayError(serverMessage);
-            case LOAD_GAME -> loadGame(serverMessage);
+            case NOTIFICATION -> displayNotification(
+                    new Gson().fromJson(message, NotificationMessage.class));
+            case ERROR -> displayError(
+                    new Gson().fromJson(message, ErrorMessage.class));
+            case LOAD_GAME -> loadGame(
+                    new Gson().fromJson(message, LoadGame.class));
         }
     }
 
-    void displayNotification(ServerMessage serverMessage) {}
+    void displayNotification(NotificationMessage serverMessage) {}
 
-    void displayError(ServerMessage serverMessage) {}
+    void displayError(ErrorMessage serverMessage) {}
 
-    void loadGame(ServerMessage serverMessage) {}
+    void loadGame(LoadGame serverMessage) {}
 
 }

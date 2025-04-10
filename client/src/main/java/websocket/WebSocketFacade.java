@@ -31,10 +31,10 @@ public class WebSocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     try {
-                        ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-                        observer.notify(serverMessage);
+                        observer.notify(message);
                     } catch (Exception ex) {
-                        observer.notify(new ServerMessage(ServerMessage.ServerMessageType.ERROR));
+                        ServerMessage errorMessage = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                        observer.notify(errorMessage.toString());
                     }
                 }
             });
