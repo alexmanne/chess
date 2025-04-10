@@ -106,7 +106,7 @@ public class WebSocketHandler {
             GameData gameData = gameDB.getGame(command.getGameID());
             ChessMove move = command.getMove();
             ChessGame game = gameData.game();
-            if (game.validMoves(move.getStartPosition()).contains(move)) {
+            if (!game.validMoves(move.getStartPosition()).contains(move)) {
                 throw new DataAccessException(500, "Error: Not a valid move");
             }
 
@@ -121,12 +121,16 @@ public class WebSocketHandler {
             ServerMessage notification = new NotificationMessage(message);
             connections.broadcast(username, notification);
 
-            broadcastCheck(newGame);
             boolean gameInCheckmate = broadcastCheckmate(newGame);
             boolean gameInStalemate = broadcastStalemate(newGame);
+            boolean gameOver = gameInStalemate || gameInCheckmate;
 
-            ServerMessage loadGame = new LoadGame(game, gameInStalemate || gameInCheckmate);
+            ServerMessage loadGame = new LoadGame(game, gameOver);
             connections.broadcast(null, loadGame);
+
+            if (!gameOver) {
+                broadcastCheck(newGame);
+            }
 
         } catch (DataAccessException ex) {
             throw ex;
