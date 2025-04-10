@@ -53,12 +53,11 @@ public class GamePlayClient {
     }
 
     private String redraw(Repl repl) {
-        return null;
+        return repl.boardRepl.drawBoard();
     }
 
     private String leave(Repl repl) throws DataAccessException {
         ws.leave(repl.authToken, repl.gameID);
-        repl.authToken = null;
         repl.gameID = 0;
         repl.state = State.LOGGEDIN;
         repl.game = null;
@@ -67,20 +66,21 @@ public class GamePlayClient {
     }
 
     private String move(Repl repl, String[] params) throws DataAccessException {
-        if (repl.state.equals(State.PLAYINGBLACK)) {
-            if (repl.game.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)) {
-                return "Not your turn";
-            }
-        } else if (repl.state.equals(State.PLAYINGWHITE)) {
-            if (repl.game.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)) {
-                return "Not your turn";
-            }
-        }
         String errorMessage = "Expected: <STARTING POSITION> <ENDING POSITION>. Example:\nd2 d4";
-        if (params.length != 2) {
-            throw new DataAccessException(400, errorMessage);
-        }
         try {
+            if (repl.state.equals(State.PLAYINGBLACK)) {
+                if (repl.game.getTeamTurn().equals(ChessGame.TeamColor.WHITE)) {
+                    return "Not your turn";
+                }
+            } else if (repl.state.equals(State.PLAYINGWHITE)) {
+                if (repl.game.getTeamTurn().equals(ChessGame.TeamColor.BLACK)) {
+                    return "Not your turn";
+                }
+            }
+            if (params.length != 2) {
+                throw new DataAccessException(400, errorMessage);
+            }
+
             ChessPosition startPosition = deserializePosition(params[0]);
             ChessPosition endPosition = deserializePosition(params[1]);
             ChessMove chessMove = new ChessMove(startPosition, endPosition);
@@ -88,6 +88,8 @@ public class GamePlayClient {
             return String.format("Made move: %s -> %s", params[0], params[1]);
         } catch (IndexOutOfBoundsException ex) {
             throw new DataAccessException(400, errorMessage);
+        } catch (NullPointerException ex) {
+            throw new DataAccessException(500, "Please try again");
         }
     }
 
@@ -99,7 +101,7 @@ public class GamePlayClient {
         String line = scanner.nextLine();
         if (line.equals("resign")) {
             ws.resign(repl.authToken, repl.gameID);
-            return String.format("%s resigned from the game", repl.username);
+            return "";
         } else {
             return "Did not resign";
         }
@@ -121,6 +123,7 @@ public class GamePlayClient {
         ArrayList<String> viableNumbers = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
 
         if (stringPosition.length() != 2) {
+            System.out.println(stringPosition.length());
             throw new DataAccessException(400, errorMessage);
         }
         String letter = stringPosition.substring(0, 1);
@@ -202,156 +205,156 @@ public class GamePlayClient {
 //        return builder.toString();
 //    }
 
-    // Creates the string to print a new board to the screen from white perspective
-    public static String drawNewWhiteBoard() {
-        StringBuilder builder = new StringBuilder();
-
-        drawRows();
-
-        builder.append(drawWhiteBoardHeader()).append("\n");
-        builder.append(drawWhiteBoardBlackPieces()).append("\n");
-        builder.append(drawGreenRow(7, blackPawnRow)).append("\n");
-        builder.append(drawBlueRow(6, emptyRow)).append("\n");
-        builder.append(drawGreenRow(5, emptyRow)).append("\n");
-        builder.append(drawBlueRow(4, emptyRow)).append("\n");
-        builder.append(drawGreenRow(3, emptyRow)).append("\n");
-        builder.append(drawBlueRow(2, whitePawnRow)).append("\n");
-        builder.append(drawWhiteBoardWhitePieces()).append("\n");
-        builder.append(drawWhiteBoardHeader()).append("\n");
-
-        return builder.toString();
-    }
-
-    // Creates the string to print a new board to the screen from black perspective
-    public static String drawNewBlackBoard() {
-        StringBuilder builder = new StringBuilder();
-
-        drawRows();
-
-        builder.append(drawBlackBoardHeader()).append("\n");
-        builder.append(drawBlackBoardWhitePieces()).append("\n");
-        builder.append(drawGreenRow(2, whitePawnRow)).append("\n");
-        builder.append(drawBlueRow(3, emptyRow)).append("\n");
-        builder.append(drawGreenRow(4, emptyRow)).append("\n");
-        builder.append(drawBlueRow(5, emptyRow)).append("\n");
-        builder.append(drawGreenRow(6, emptyRow)).append("\n");
-        builder.append(drawBlueRow(7, blackPawnRow)).append("\n");
-        builder.append(drawBlackBoardBlackPieces()).append("\n");
-        builder.append(drawBlackBoardHeader()).append("\n");
-
-        return builder.toString();
-    }
-
-    private static void drawRows() {
-        emptyRow = new ArrayList<>();
-        blackPawnRow = new ArrayList<>();
-        whitePawnRow = new ArrayList<>();
-
-        for (int i = 0; i < 8; i++) {
-            emptyRow.add(EMPTY);
-            blackPawnRow.add(BLACK_PAWN);
-            whitePawnRow.add(WHITE_PAWN);
-        }
-    }
-
-    private static String drawBlueRow(int rowNum, ArrayList<String> fill) {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
-                " " + rowNum + " " +
-                SET_BG_COLOR_BLUE + fill.get(0) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(1) +
-                SET_BG_COLOR_BLUE + fill.get(2) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(3) +
-                SET_BG_COLOR_BLUE + fill.get(4) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(5) +
-                SET_BG_COLOR_BLUE + fill.get(6) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(7) +
-                SET_BG_COLOR_DARK_GREY+ SET_TEXT_COLOR_WHITE +
-                " " + rowNum + " " +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawGreenRow(int rowNum, ArrayList<String> fill) {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
-                " " + rowNum + " " +
-                SET_BG_COLOR_DARK_GREEN + fill.get(0) +
-                SET_BG_COLOR_BLUE + fill.get(1) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(2) +
-                SET_BG_COLOR_BLUE + fill.get(3) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(4) +
-                SET_BG_COLOR_BLUE + fill.get(5) +
-                SET_BG_COLOR_DARK_GREEN + fill.get(6) +
-                SET_BG_COLOR_BLUE + fill.get(7) +
-                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
-                " " + rowNum + " " +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawWhiteBoardWhitePieces() {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 1 " +
-                SET_BG_COLOR_DARK_GREEN + WHITE_ROOK +
-                SET_BG_COLOR_BLUE + WHITE_KNIGHT +
-                SET_BG_COLOR_DARK_GREEN + WHITE_BISHOP +
-                SET_BG_COLOR_BLUE + WHITE_QUEEN +
-                SET_BG_COLOR_DARK_GREEN + WHITE_KING +
-                SET_BG_COLOR_BLUE + WHITE_BISHOP +
-                SET_BG_COLOR_DARK_GREEN + WHITE_KNIGHT +
-                SET_BG_COLOR_BLUE + WHITE_ROOK +
-                SET_BG_COLOR_DARK_GREY + " 1 " +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawWhiteBoardBlackPieces() {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
-                SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + BLACK_ROOK +
-                SET_BG_COLOR_DARK_GREEN + BLACK_KNIGHT +
-                SET_BG_COLOR_BLUE + BLACK_BISHOP +
-                SET_BG_COLOR_DARK_GREEN + BLACK_QUEEN +
-                SET_BG_COLOR_BLUE + BLACK_KING +
-                SET_BG_COLOR_DARK_GREEN + BLACK_BISHOP +
-                SET_BG_COLOR_BLUE + BLACK_KNIGHT +
-                SET_BG_COLOR_DARK_GREEN + BLACK_ROOK +
-                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawWhiteBoardHeader() {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
-                EMPTY + " a  b  c  d  e  f  g  h " + EMPTY +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawBlackBoardWhitePieces() {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 1 " +
-                SET_BG_COLOR_BLUE + WHITE_ROOK +
-                SET_BG_COLOR_DARK_GREEN + WHITE_KNIGHT +
-                SET_BG_COLOR_BLUE + WHITE_BISHOP +
-                SET_BG_COLOR_DARK_GREEN + WHITE_QUEEN +
-                SET_BG_COLOR_BLUE + WHITE_KING +
-                SET_BG_COLOR_DARK_GREEN + WHITE_BISHOP +
-                SET_BG_COLOR_BLUE + WHITE_KNIGHT +
-                SET_BG_COLOR_DARK_GREEN + WHITE_ROOK +
-                SET_BG_COLOR_DARK_GREY + " 1 " +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawBlackBoardBlackPieces() {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
-                SET_BG_COLOR_DARK_GREEN + SET_TEXT_COLOR_BLACK + BLACK_ROOK +
-                SET_BG_COLOR_BLUE + BLACK_KNIGHT +
-                SET_BG_COLOR_DARK_GREEN + BLACK_BISHOP +
-                SET_BG_COLOR_BLUE + BLACK_QUEEN +
-                SET_BG_COLOR_DARK_GREEN + BLACK_KING +
-                SET_BG_COLOR_BLUE + BLACK_BISHOP +
-                SET_BG_COLOR_DARK_GREEN + BLACK_KNIGHT +
-                SET_BG_COLOR_BLUE + BLACK_ROOK +
-                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
-                RESET_BG_COLOR;
-    }
-
-    private static String drawBlackBoardHeader() {
-        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
-                EMPTY + " h  g  f  e  d  c  b  a " + EMPTY +
-                RESET_BG_COLOR;
-    }
+//    // Creates the string to print a new board to the screen from white perspective
+//    public static String drawNewWhiteBoard() {
+//        StringBuilder builder = new StringBuilder();
+//
+//        drawRows();
+//
+//        builder.append(drawWhiteBoardHeader()).append("\n");
+//        builder.append(drawWhiteBoardBlackPieces()).append("\n");
+//        builder.append(drawGreenRow(7, blackPawnRow)).append("\n");
+//        builder.append(drawBlueRow(6, emptyRow)).append("\n");
+//        builder.append(drawGreenRow(5, emptyRow)).append("\n");
+//        builder.append(drawBlueRow(4, emptyRow)).append("\n");
+//        builder.append(drawGreenRow(3, emptyRow)).append("\n");
+//        builder.append(drawBlueRow(2, whitePawnRow)).append("\n");
+//        builder.append(drawWhiteBoardWhitePieces()).append("\n");
+//        builder.append(drawWhiteBoardHeader()).append("\n");
+//
+//        return builder.toString();
+//    }
+//
+//    // Creates the string to print a new board to the screen from black perspective
+//    public static String drawNewBlackBoard() {
+//        StringBuilder builder = new StringBuilder();
+//
+//        drawRows();
+//
+//        builder.append(drawBlackBoardHeader()).append("\n");
+//        builder.append(drawBlackBoardWhitePieces()).append("\n");
+//        builder.append(drawGreenRow(2, whitePawnRow)).append("\n");
+//        builder.append(drawBlueRow(3, emptyRow)).append("\n");
+//        builder.append(drawGreenRow(4, emptyRow)).append("\n");
+//        builder.append(drawBlueRow(5, emptyRow)).append("\n");
+//        builder.append(drawGreenRow(6, emptyRow)).append("\n");
+//        builder.append(drawBlueRow(7, blackPawnRow)).append("\n");
+//        builder.append(drawBlackBoardBlackPieces()).append("\n");
+//        builder.append(drawBlackBoardHeader()).append("\n");
+//
+//        return builder.toString();
+//    }
+//
+//    private static void drawRows() {
+//        emptyRow = new ArrayList<>();
+//        blackPawnRow = new ArrayList<>();
+//        whitePawnRow = new ArrayList<>();
+//
+//        for (int i = 0; i < 8; i++) {
+//            emptyRow.add(EMPTY);
+//            blackPawnRow.add(BLACK_PAWN);
+//            whitePawnRow.add(WHITE_PAWN);
+//        }
+//    }
+//
+//    private static String drawBlueRow(int rowNum, ArrayList<String> fill) {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+//                " " + rowNum + " " +
+//                SET_BG_COLOR_BLUE + fill.get(0) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(1) +
+//                SET_BG_COLOR_BLUE + fill.get(2) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(3) +
+//                SET_BG_COLOR_BLUE + fill.get(4) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(5) +
+//                SET_BG_COLOR_BLUE + fill.get(6) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(7) +
+//                SET_BG_COLOR_DARK_GREY+ SET_TEXT_COLOR_WHITE +
+//                " " + rowNum + " " +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawGreenRow(int rowNum, ArrayList<String> fill) {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+//                " " + rowNum + " " +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(0) +
+//                SET_BG_COLOR_BLUE + fill.get(1) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(2) +
+//                SET_BG_COLOR_BLUE + fill.get(3) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(4) +
+//                SET_BG_COLOR_BLUE + fill.get(5) +
+//                SET_BG_COLOR_DARK_GREEN + fill.get(6) +
+//                SET_BG_COLOR_BLUE + fill.get(7) +
+//                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+//                " " + rowNum + " " +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawWhiteBoardWhitePieces() {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 1 " +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_ROOK +
+//                SET_BG_COLOR_BLUE + WHITE_KNIGHT +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_BISHOP +
+//                SET_BG_COLOR_BLUE + WHITE_QUEEN +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_KING +
+//                SET_BG_COLOR_BLUE + WHITE_BISHOP +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_KNIGHT +
+//                SET_BG_COLOR_BLUE + WHITE_ROOK +
+//                SET_BG_COLOR_DARK_GREY + " 1 " +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawWhiteBoardBlackPieces() {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+//                SET_BG_COLOR_BLUE + SET_TEXT_COLOR_BLACK + BLACK_ROOK +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_KNIGHT +
+//                SET_BG_COLOR_BLUE + BLACK_BISHOP +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_QUEEN +
+//                SET_BG_COLOR_BLUE + BLACK_KING +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_BISHOP +
+//                SET_BG_COLOR_BLUE + BLACK_KNIGHT +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_ROOK +
+//                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawWhiteBoardHeader() {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+//                EMPTY + " a  b  c  d  e  f  g  h " + EMPTY +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawBlackBoardWhitePieces() {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 1 " +
+//                SET_BG_COLOR_BLUE + WHITE_ROOK +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_KNIGHT +
+//                SET_BG_COLOR_BLUE + WHITE_BISHOP +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_QUEEN +
+//                SET_BG_COLOR_BLUE + WHITE_KING +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_BISHOP +
+//                SET_BG_COLOR_BLUE + WHITE_KNIGHT +
+//                SET_BG_COLOR_DARK_GREEN + WHITE_ROOK +
+//                SET_BG_COLOR_DARK_GREY + " 1 " +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawBlackBoardBlackPieces() {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+//                SET_BG_COLOR_DARK_GREEN + SET_TEXT_COLOR_BLACK + BLACK_ROOK +
+//                SET_BG_COLOR_BLUE + BLACK_KNIGHT +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_BISHOP +
+//                SET_BG_COLOR_BLUE + BLACK_QUEEN +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_KING +
+//                SET_BG_COLOR_BLUE + BLACK_BISHOP +
+//                SET_BG_COLOR_DARK_GREEN + BLACK_KNIGHT +
+//                SET_BG_COLOR_BLUE + BLACK_ROOK +
+//                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE + " 8 " +
+//                RESET_BG_COLOR;
+//    }
+//
+//    private static String drawBlackBoardHeader() {
+//        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+//                EMPTY + " h  g  f  e  d  c  b  a " + EMPTY +
+//                RESET_BG_COLOR;
+//    }
 
 }

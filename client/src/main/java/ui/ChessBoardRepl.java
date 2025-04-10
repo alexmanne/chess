@@ -1,9 +1,11 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static ui.EscapeSequences.*;
@@ -60,10 +62,101 @@ public class ChessBoardRepl {
     }
 
     public String drawBoard() {
-        return null;
+        if (playerColor == ChessGame.TeamColor.WHITE) {
+            return drawWhiteBoard();
+        } else if (playerColor == ChessGame.TeamColor.BLACK) {
+            return drawBlackBoard();
+        } else {
+            return drawWhiteBoard();
+        }
     }
+
+    private String drawWhiteBoard() {
+        StringBuilder builder = new StringBuilder();
+        ChessBoard board = game.getBoard();
+        builder.append(drawWhiteBoardHeader());
+        for (int row = 8; row > 0; row--) {
+            ArrayList<String> nextRow = new ArrayList<>();
+            for (int col = 1; col < 9; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                nextRow.add(converter.get(board.getPiece(position)));
+            }
+            if (row % 2 == 0) {
+                builder.append(drawBlueRow(row, nextRow));
+            } else {
+                builder.append(drawGreenRow(row, nextRow));
+            }
+        }
+        builder.append(drawWhiteBoardHeader());
+        return builder.toString();
+    }
+
+    private String drawBlackBoard() {
+        StringBuilder builder = new StringBuilder();
+        ChessBoard board = game.getBoard();
+        builder.append(drawWhiteBoardHeader());
+        for (int row = 1; row < 9; row++) {
+            ArrayList<String> nextRow = new ArrayList<>();
+            for (int col = 8; col > 0; col--) {
+                ChessPosition position = new ChessPosition(row, col);
+                nextRow.add(converter.get(board.getPiece(position)));
+            }
+            if (row % 2 == 0) {
+                builder.append(drawGreenRow(row, nextRow));
+            } else {
+                builder.append(drawBlueRow(row, nextRow));
+            }
+        }
+        builder.append(drawWhiteBoardHeader());
+        return builder.toString();
+    }
+
 
     public String highlight(ChessPosition chessPosition) {
         return null;
+    }
+
+    private static String drawBlueRow(int rowNum, ArrayList<String> fill) {
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                " " + rowNum + " " +
+                SET_BG_COLOR_BLUE + fill.get(0) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(1) +
+                SET_BG_COLOR_BLUE + fill.get(2) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(3) +
+                SET_BG_COLOR_BLUE + fill.get(4) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(5) +
+                SET_BG_COLOR_BLUE + fill.get(6) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(7) +
+                SET_BG_COLOR_DARK_GREY+ SET_TEXT_COLOR_WHITE +
+                " " + rowNum + " " +
+                RESET_BG_COLOR;
+    }
+
+    private static String drawGreenRow(int rowNum, ArrayList<String> fill) {
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                " " + rowNum + " " +
+                SET_BG_COLOR_DARK_GREEN + fill.get(0) +
+                SET_BG_COLOR_BLUE + fill.get(1) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(2) +
+                SET_BG_COLOR_BLUE + fill.get(3) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(4) +
+                SET_BG_COLOR_BLUE + fill.get(5) +
+                SET_BG_COLOR_DARK_GREEN + fill.get(6) +
+                SET_BG_COLOR_BLUE + fill.get(7) +
+                SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                " " + rowNum + " " +
+                RESET_BG_COLOR;
+    }
+
+    private static String drawWhiteBoardHeader() {
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                EMPTY + " a  b  c  d  e  f  g  h " + EMPTY +
+                RESET_BG_COLOR;
+    }
+
+    private static String drawBlackBoardHeader() {
+        return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +
+                EMPTY + " h  g  f  e  d  c  b  a " + EMPTY +
+                RESET_BG_COLOR;
     }
 }

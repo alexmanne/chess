@@ -1,5 +1,6 @@
 package ui.client;
 
+import chess.ChessGame;
 import exception.DataAccessException;
 import model.request.CreateRequest;
 import model.request.JoinRequest;
@@ -89,12 +90,10 @@ public class PostLoginClient {
                 server.joinGame(request);
                 if (color.equals("WHITE")) {
                     repl.state = State.PLAYINGWHITE;
-                    String board = GamePlayClient.drawNewWhiteBoard();
-                    System.out.print(board);
+                    repl.boardRepl.setPlayerColor(ChessGame.TeamColor.WHITE);
                 } else {
                     repl.state = State.PLAYINGBLACK;
-                    String board = GamePlayClient.drawNewBlackBoard();
-                    System.out.print(board);
+                    repl.boardRepl.setPlayerColor(ChessGame.TeamColor.BLACK);
                 }
                 return "joined game: " + givenId;
             } catch (IndexOutOfBoundsException ex){
@@ -114,10 +113,9 @@ public class PostLoginClient {
             try {
                 repl.gameID = games.get(givenId - 1).gameID();
                 repl.state = State.OBSERVING;
-                String board = GamePlayClient.drawNewWhiteBoard();
-                System.out.print(board);
+                repl.boardRepl.setPlayerColor(null);
                 return "observing game: "+ givenId;
-            } catch (IndexOutOfBoundsException ex) {
+            } catch (Exception ex) {
                 throw new DataAccessException(400, "game ID not recognized");
             }
 

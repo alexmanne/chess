@@ -84,7 +84,7 @@ public class WebSocketHandler {
             connections.broadcast(username, gameData.gameID(), notification);
 
             ServerMessage loadGame = new LoadGame(gameData.game());
-            connections.connections.get(username).send(loadGame.toString());
+            session.getRemote().sendString(loadGame.toString());
         } catch (DataAccessException ex) {
             throw ex;
         }

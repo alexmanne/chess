@@ -1,8 +1,8 @@
 package ui;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.DataAccessException;
-import model.GameData;
 import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
@@ -23,7 +23,7 @@ public class Repl implements ServerMessageObserver {
     public String authToken;
     public String username;
     public int gameID;
-    public GameData game;
+    public ChessGame game;
     public State state;
 
     public Repl(int port) throws DataAccessException {
@@ -133,12 +133,24 @@ public class Repl implements ServerMessageObserver {
         }
     }
 
-    void displayNotification(NotificationMessage serverMessage) {}
+    void displayNotification(NotificationMessage serverMessage) {
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
+        System.out.println(serverMessage.message);
+        printGamePlayPrompt();
+    }
 
-    void displayError(ErrorMessage serverMessage) {}
+    void displayError(ErrorMessage serverMessage) {
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_RED);
+        System.out.println(serverMessage.errorMessage);
+        printGamePlayPrompt();
+    }
 
     void loadGame(LoadGame serverMessage) {
-        boardRepl.drawBoard();
+        this.game = serverMessage.game;
+        boardRepl.setGame(serverMessage.game);
+        String board = boardRepl.drawBoard();
+        System.out.print(board);
+        printGamePlayPrompt();
     }
 
 }
