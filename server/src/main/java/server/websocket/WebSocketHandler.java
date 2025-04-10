@@ -2,6 +2,7 @@ package server.websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataaccess.AuthDao;
@@ -20,6 +21,7 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 @WebSocket
 public class WebSocketHandler {
@@ -57,7 +59,6 @@ public class WebSocketHandler {
 //
     private void connect(Session session, UserGameCommand command) throws DataAccessException {
         try {
-            System.out.println("received connect message");
 
             AuthData authData = authDB.getAuth(command.getAuthToken());
             if (authData.authToken() == null) {
@@ -86,7 +87,6 @@ public class WebSocketHandler {
             connections.broadcast(username, gameData.gameID(), notification);
 
             ServerMessage loadGame = new LoadGame(gameData.game());
-            System.out.println("Sending loadgame message");
             session.getRemote().sendString(loadGame.toString());
         } catch (DataAccessException ex) {
             throw ex;
@@ -163,11 +163,48 @@ public class WebSocketHandler {
     }
 
     private boolean validateMove (ChessGame game, ChessMove move, ChessGame.TeamColor usernameColor) {
+        if (game.getBoard().getPiece(move.getStartPosition()) == null) {
+            return false;
+        }
         if (!game.getBoard().getPiece(move.getStartPosition()).getTeamColor().equals(usernameColor)) {
             return false;
         }
         return game.validMoves(move.getStartPosition()).contains(move);
     }
+
+//    private ChessMove handlePromotion(ChessGame game, ChessMove move) {
+//        String validPieces = "Valid pieces are: rook, knight, bishop, queen\n";
+//        System.out.println("here?");
+//        ChessPosition startPosition = move.getStartPosition();
+//        ChessPosition endPosition = move.getEndPosition();
+//        ChessPiece piece = game.getBoard().getPiece(startPosition);
+//        if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+//            return move;
+//        }
+//        if ((piece.getTeamColor() == ChessGame.TeamColor.WHITE && endPosition.getRow() == 8) ||
+//                (piece.getTeamColor() == ChessGame.TeamColor.BLACK && endPosition.getRow() == 1)) {
+//            Scanner scanner = new Scanner(System.in);
+//            while (true) {
+//                System.out.print("\n" + "SELECT PROMOTION PIECE >>> ");
+//                String line = scanner.nextLine();
+//                if (line == null) {
+//                    System.out.print(validPieces);
+//                }
+//                else if (line.equalsIgnoreCase("rook")) {
+//                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK);
+//                } else if (line.equalsIgnoreCase("knight")) {
+//                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT);
+//                } else if (line.equalsIgnoreCase("bishop")) {
+//                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP);
+//                } else if (line.equalsIgnoreCase("queen")) {
+//                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN);
+//                } else {
+//                    System.out.print(validPieces);
+//                }
+//            }
+//        }
+//        return move;
+//    }
 
     private String serializePosition(ChessPosition chessPosition) throws DataAccessException {
         // a1 is ChessPosition(1, 1)

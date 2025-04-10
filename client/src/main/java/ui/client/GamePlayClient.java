@@ -81,7 +81,7 @@ public class GamePlayClient {
             ChessPosition endPosition = deserializePosition(params[1]);
             ChessMove chessMove = new ChessMove(startPosition, endPosition);
             ws.makeMove(repl.authToken, repl.gameID, chessMove);
-            return String.format("Made move: %s -> %s", params[0], params[1]);
+            return String.format("Move: %s -> %s", params[0], params[1]);
         } catch (IndexOutOfBoundsException ex) {
             throw new DataAccessException(400, errorMessage);
         } catch (NullPointerException ex) {
