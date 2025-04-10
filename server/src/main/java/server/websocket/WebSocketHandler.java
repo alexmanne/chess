@@ -38,42 +38,37 @@ public class WebSocketHandler {
         try {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
-            AuthData authData = authDB.getAuth(command.getAuthToken());
-            if (authData.authToken() == null) {
-                throw new DataAccessException(401, "Error: unauthorized");
-            }
-
-            String username = authData.username();
-
-//             Make sure it is in the connection manager map
-            saveSession(username, session);
-
             if (command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)) {
                 MakeMoveCommand moveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
-                make_move(username, moveCommand);
+                make_move(session, moveCommand);
             }
 
             switch (command.getCommandType()) {
-                case CONNECT -> connect(session, username, command);
-                case LEAVE -> leave(username, command);
-                case RESIGN -> resign(username, command);
+                case CONNECT -> connect(session, command);
+                case LEAVE -> leave(session, command);
+                case RESIGN -> resign(session, command);
             }
         } catch (DataAccessException ex) {
-            sendError(ex);
+            sendError(session, ex);
         } catch (Throwable ex) {
-            sendError(new DataAccessException(400, "Error: " + ex.getMessage()));
+            sendError(session, new DataAccessException(400, "Error: " + ex.getMessage()));
         }
     }
 //
-    private void connect(Session session, String username, UserGameCommand command) throws DataAccessException {
+    private void connect(Session session, UserGameCommand command) throws DataAccessException {
         try {
-            connections.add(username, session);
-            GameData gameData = gameDB.getGame(command.getGameID());
+            AuthData authData = authDB.getAuth(command.getAuthToken());
+            if (authData.authToken() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
+                session.getRemote().sendString(errorMessage.toString());
+                return;
+            }
+            String username = authData.username();
+            saveSession(username, session);
 
+            GameData gameData = gameDB.getGame(command.getGameID());
             if (gameData == null) {
-                String message = "Error: game not recognized";
-                ErrorMessage error = new ErrorMessage(message);
-                connections.connections.get(username).send(error.toString());
+                sendError(session, new DataAccessException(500, "Not a valid game"));
                 return;
             }
 
@@ -98,18 +93,24 @@ public class WebSocketHandler {
         }
     }
 
-    private void make_move(String username, MakeMoveCommand command) throws DataAccessException {
+    private void make_move(Session session, MakeMoveCommand command) throws DataAccessException {
         try {
+            AuthData authData = authDB.getAuth(command.getAuthToken());
+            if (authData.authToken() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
+                session.getRemote().sendString(errorMessage.toString());
+                return;
+            }
+            String username = authData.username();
+
             GameData gameData = gameDB.getGame(command.getGameID());
             ChessMove move = command.getMove();
             ChessGame game = gameData.game();
-
             if (game.validMoves(move.getStartPosition()).contains(move)) {
                 throw new DataAccessException(500, "Error: Not a valid move");
             }
 
             game.makeMove(move);
-
             GameData newGame = new GameData(gameData.gameID(), gameData.whiteUsername(),
                     gameData.blackUsername(), gameData.gameName(), game);
             gameDB.updateGame(newGame);
@@ -125,9 +126,7 @@ public class WebSocketHandler {
             boolean gameInStalemate = broadcastStalemate(newGame);
 
             ServerMessage loadGame = new LoadGame(game, gameInStalemate || gameInCheckmate);
-            connections.broadcast("", loadGame);
-
-
+            connections.broadcast(null, loadGame);
 
         } catch (DataAccessException ex) {
             throw ex;
@@ -169,7 +168,7 @@ public class WebSocketHandler {
                     game.isInCheck(ChessGame.TeamColor.BLACK)) {
                 String checkMessage = String.format("%s (black) is in check", newGame.blackUsername());
                 ServerMessage notification = new NotificationMessage(checkMessage);
-                connections.broadcast("", notification);
+                connections.broadcast(null, notification);
             }
         } catch (Exception ex) {
             throw new DataAccessException(500, ex.getMessage());
@@ -184,7 +183,7 @@ public class WebSocketHandler {
                 String checkmateMessage = String.format("%s (white) is in checkmate. " +
                         "%s won!", newGame.whiteUsername(), newGame.blackUsername());
                 ServerMessage notification = new NotificationMessage(checkmateMessage);
-                connections.broadcast("", notification);
+                connections.broadcast(null, notification);
                 return true;
             }
 
@@ -193,7 +192,7 @@ public class WebSocketHandler {
                 String checkmateMessage = String.format("%s (black) is in checkmate. " +
                         "%s won!", newGame.blackUsername(), newGame.whiteUsername());
                 ServerMessage notification = new NotificationMessage(checkmateMessage);
-                connections.broadcast("", notification);
+                connections.broadcast(null, notification);
                 return true;
             }
 
@@ -212,7 +211,7 @@ public class WebSocketHandler {
                     game.isInStalemate(ChessGame.TeamColor.BLACK))) {
                 String stalemateMessage = "Game is in stalemate. No one won!";
                 ServerMessage notification = new NotificationMessage(stalemateMessage);
-                connections.broadcast("", notification);
+                connections.broadcast(null, notification);
                 return true;
             }
             return false;
@@ -222,8 +221,16 @@ public class WebSocketHandler {
 
     }
 
-    private void leave(String username, UserGameCommand command) throws DataAccessException {
+    private void leave(Session session, UserGameCommand command) throws DataAccessException {
         try {
+            AuthData authData = authDB.getAuth(command.getAuthToken());
+            if (authData.authToken() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
+                session.getRemote().sendString(errorMessage.toString());
+                return;
+            }
+            String username = authData.username();
+
             GameData gameData = gameDB.getGame(command.getGameID());
             if (username.equals(gameData.whiteUsername())) {
                 GameData newGame = new GameData(gameData.gameID(), null,
@@ -246,8 +253,16 @@ public class WebSocketHandler {
         }
     }
 
-    private void resign(String username, UserGameCommand command) throws DataAccessException {
+    private void resign(Session session, UserGameCommand command) throws DataAccessException {
         try {
+            AuthData authData = authDB.getAuth(command.getAuthToken());
+            if (authData.authToken() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
+                session.getRemote().sendString(errorMessage.toString());
+                return;
+            }
+            String username = authData.username();
+
             GameData gameData = gameDB.getGame(command.getGameID());
             String winner;
             if (username.equals(gameData.whiteUsername())) {
@@ -272,9 +287,9 @@ public class WebSocketHandler {
         connections.add(username, session);
     }
 
-    private void sendError(DataAccessException exception) throws IOException {
+    private void sendError(Session session, DataAccessException exception) throws IOException {
         ServerMessage errorMessage = new ErrorMessage(exception.getMessage());
-        connections.broadcast(null, errorMessage);
+        session.getRemote().sendString(errorMessage.toString());
     }
 
 }
