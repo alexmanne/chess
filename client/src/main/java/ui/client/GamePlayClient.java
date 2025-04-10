@@ -67,9 +67,7 @@ public class GamePlayClient {
     }
 
     private String move(Repl repl, String[] params) throws DataAccessException {
-        if (repl.state.equals(State.OBSERVING)) {
-            return "You are observing and cannot make moves";
-        } else if (repl.state.equals(State.PLAYINGBLACK)) {
+        if (repl.state.equals(State.PLAYINGBLACK)) {
             if (repl.game.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)) {
                 return "Not your turn";
             }

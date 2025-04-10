@@ -106,8 +106,23 @@ public class WebSocketHandler {
             GameData gameData = gameDB.getGame(command.getGameID());
             ChessMove move = command.getMove();
             ChessGame game = gameData.game();
-            if (!game.validMoves(move.getStartPosition()).contains(move)) {
+
+            ChessGame.TeamColor usernameColor;
+            if (username.equals(gameData.blackUsername())) {
+                usernameColor = ChessGame.TeamColor.BLACK;
+            } else if (username.equals(gameData.whiteUsername())) {
+                usernameColor = ChessGame.TeamColor.WHITE;
+            } else {
+                usernameColor = null;
+            }
+
+            if (!validateMove(game, move, usernameColor)) {
                 throw new DataAccessException(500, "Error: Not a valid move");
+            }
+
+            if (!username.equals(gameData.blackUsername()) &&
+                !username.equals(gameData.whiteUsername())) {
+                throw new DataAccessException(500, "Error: You are observing. Cannot move");
             }
 
             game.makeMove(move);
@@ -138,6 +153,13 @@ public class WebSocketHandler {
         catch (Exception ex) {
             throw new DataAccessException(500, ex.getMessage());
         }
+    }
+
+    private boolean validateMove (ChessGame game, ChessMove move, ChessGame.TeamColor usernameColor) {
+        if (!game.getBoard().getPiece(move.getStartPosition()).getTeamColor().equals(usernameColor)) {
+            return false;
+        }
+        return game.validMoves(move.getStartPosition()).contains(move);
     }
 
     private String serializePosition(ChessPosition chessPosition) throws DataAccessException {
