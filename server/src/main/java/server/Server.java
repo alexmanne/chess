@@ -14,12 +14,13 @@ public class Server {
 
     private final UserService userService;
     private final GameService gameService;
-    private AuthDao authDB;
+    private final AuthDao authDB;
+    private final GameDao gameDB;
 
     public Server() {
         UserDao userDB = new MySQLUserDAO();
         authDB = new MySQLAuthDao();
-        GameDao gameDB = new MySQLGameDao();
+        gameDB = new MySQLGameDao();
 
         this.userService = new UserService(userDB, authDB, gameDB);
         this.gameService = new GameService(authDB, gameDB);
@@ -30,7 +31,7 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        WebSocketHandler handler = new WebSocketHandler(authDB);
+        WebSocketHandler handler = new WebSocketHandler(authDB, gameDB);
 
         Spark.webSocket("/ws", handler);
 

@@ -3,8 +3,10 @@ package server.websocket;
 import com.google.gson.Gson;
 import dataaccess.AuthDao;
 import dataaccess.DatabaseManager;
+import dataaccess.GameDao;
 import exception.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -20,9 +22,11 @@ public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
     private final AuthDao authDB;
+    private final GameDao gameDB;
 
-    public WebSocketHandler(AuthDao authDB) {
+    public WebSocketHandler(AuthDao authDB, GameDao gameDB) {
         this.authDB = authDB;
+        this.gameDB = gameDB;
     }
 //
     @OnWebSocketMessage
@@ -53,7 +57,18 @@ public class WebSocketHandler {
         }
     }
 //
-    private void connect(Session session, String username, UserGameCommand command) throws IOException {
+    private void connect(Session session, String username, UserGameCommand command) throws IOException, DataAccessException {
+        connections.add(username, session);
+        GameData gameData = gameDB.getGame(command.getGameID());
+        String message;
+        if (username.equals(gameData.whiteUsername())) {
+            message = String.format("%s joined the game playing white", username);
+        } else if (username.equals(gameData.blackUsername())) {
+            message = String.format("%s joined the game playing black", username);
+        } else {
+            message = String.format("%s joined the game to observe", username);
+        }
+
     }
 
     private void make_move(Session session, String username, UserGameCommand command) throws IOException {
