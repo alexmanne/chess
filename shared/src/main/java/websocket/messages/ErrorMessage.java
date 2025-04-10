@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 public class ErrorMessage extends ServerMessage {
 
-    public ServerMessageType serverMessageType = ServerMessageType.ERROR;
     public String errorMessage;
 
     public ErrorMessage(String errorMessage) {

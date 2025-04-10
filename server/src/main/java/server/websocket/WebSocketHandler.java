@@ -71,7 +71,10 @@ public class WebSocketHandler {
             GameData gameData = gameDB.getGame(command.getGameID());
 
             if (gameData == null) {
-                throw new DataAccessException(401, "Error: game not recognized");
+                String message = "Error: game not recognized";
+                ErrorMessage error = new ErrorMessage(message);
+                connections.connections.get(username).send(error.toString());
+                return;
             }
 
             String message;
@@ -86,7 +89,7 @@ public class WebSocketHandler {
             connections.broadcast(username, notification);
 
             ServerMessage loadGame = new LoadGame(gameData.game(), false);
-            connections.broadcast("", loadGame);
+            connections.connections.get(username).send(loadGame.toString());
         } catch (DataAccessException ex) {
             throw ex;
         }

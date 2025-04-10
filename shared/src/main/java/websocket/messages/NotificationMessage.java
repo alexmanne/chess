@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 public class NotificationMessage extends ServerMessage {
 
-    public ServerMessageType serverMessageType = ServerMessageType.NOTIFICATION;
     public String message;
 
     public NotificationMessage(String message) {

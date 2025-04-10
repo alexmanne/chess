@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 
 public class LoadGame extends ServerMessage {
 
-    public ServerMessageType serverMessageType = ServerMessageType.LOAD_GAME;
     public ChessGame game;
     boolean gameOver;
 
