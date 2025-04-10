@@ -14,6 +14,7 @@ import websocket.messages.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
@@ -84,13 +85,22 @@ public class GamePlayClient {
     }
 
     private String resign(Repl repl) throws DataAccessException {
-        ws.resign(repl.authToken, repl.gameID);
-        repl.authToken = null;
-        repl.gameID = 0;
-        repl.state = State.LOGGEDIN;
-        repl.game = null;
-        isConnected = false;
-        return String.format("%s resigned from the game", repl.username);
+        System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
+        System.out.print("Resigning forfeits the game and cannot be undone.\n");
+        System.out.print("Type 'resign' to confirm: ");
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        if (line.equals("resign")) {
+            ws.resign(repl.authToken, repl.gameID);
+            repl.authToken = null;
+            repl.gameID = 0;
+            repl.state = State.LOGGEDIN;
+            repl.game = null;
+            isConnected = false;
+            return String.format("%s resigned from the game", repl.username);
+        } else {
+            return "Did not resign";
+        }
     }
 
     private String highlight(Repl repl, String[] params) throws DataAccessException {
