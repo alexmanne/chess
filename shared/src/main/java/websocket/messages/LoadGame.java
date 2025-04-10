@@ -7,10 +7,13 @@ public class LoadGame extends ServerMessage {
 
     public ServerMessageType serverMessageType = ServerMessageType.LOAD_GAME;
     public ChessGame game;
+    boolean gameOver;
 
-    public LoadGame(ChessGame game) {
+    public LoadGame(ChessGame game, boolean gameOver) {
         super(ServerMessageType.LOAD_GAME);
         this.game = game;
+
+        this.gameOver = gameOver;
     }
 
     @Override

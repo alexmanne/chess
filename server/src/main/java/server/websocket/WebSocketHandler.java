@@ -18,6 +18,7 @@ import service.GameService;
 import websocket.commands.*;
 import websocket.messages.*;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,10 @@ public class WebSocketHandler {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
 
             AuthData authData = authDB.getAuth(command.getAuthToken());
+            if (authData.authToken() == null) {
+                throw new DataAccessException(401, "Error: unauthorized");
+            }
+
             String username = authData.username();
 
 //             Make sure it is in the connection manager map
@@ -67,6 +72,11 @@ public class WebSocketHandler {
         try {
             connections.add(username, session);
             GameData gameData = gameDB.getGame(command.getGameID());
+
+            if (gameData == null) {
+                throw new DataAccessException(401, "Error: game not recognized");
+            }
+
             String message;
             if (username.equals(gameData.whiteUsername())) {
                 message = String.format("%s joined the game playing white", username);
@@ -76,7 +86,10 @@ public class WebSocketHandler {
                 message = String.format("%s joined the game to observe", username);
             }
             ServerMessage notification = new NotificationMessage(message);
-            connections.broadcast("", notification);
+            connections.broadcast(username, notification);
+
+            ServerMessage loadGame = new LoadGame(gameData.game(), false);
+            connections.broadcast("", loadGame);
         } catch (DataAccessException ex) {
             throw ex;
         }
@@ -90,6 +103,11 @@ public class WebSocketHandler {
             GameData gameData = gameDB.getGame(command.getGameID());
             ChessMove move = command.getMove();
             ChessGame game = gameData.game();
+
+            if (game.validMoves(move.getStartPosition()).contains(move)) {
+                throw new DataAccessException(500, "Error: Not a valid move");
+            }
+
             game.makeMove(move);
 
             GameData newGame = new GameData(gameData.gameID(), gameData.whiteUsername(),
@@ -100,9 +118,17 @@ public class WebSocketHandler {
             String endPosition = serializePosition(move.getEndPosition());
             String message = String.format("%s moved %s -> %s", username, startPosition, endPosition);
             ServerMessage notification = new NotificationMessage(message);
-            ServerMessage loadGame = new LoadGame(game);
             connections.broadcast(username, notification);
+
+            broadcastCheck(newGame);
+            boolean gameInCheckmate = broadcastCheckmate(newGame);
+            boolean gameInStalemate = broadcastStalemate(newGame);
+
+            ServerMessage loadGame = new LoadGame(game, gameInStalemate || gameInCheckmate);
             connections.broadcast("", loadGame);
+
+
+
         } catch (DataAccessException ex) {
             throw ex;
         }
@@ -129,10 +155,76 @@ public class WebSocketHandler {
         return colString + rowString;
     }
 
+    private void broadcastCheck(GameData newGame) throws DataAccessException {
+        try {
+            ChessGame game = newGame.game();
+            if (game.getTeamTurn().equals(ChessGame.TeamColor.WHITE) &&
+                    game.isInCheck(ChessGame.TeamColor.WHITE)) {
+                String checkMessage = String.format("%s (white) is in check", newGame.whiteUsername());
+                ServerMessage notification = new NotificationMessage(checkMessage);
+                connections.broadcast("", notification);
+            }
+
+            if (game.getTeamTurn().equals(ChessGame.TeamColor.BLACK) &&
+                    game.isInCheck(ChessGame.TeamColor.BLACK)) {
+                String checkMessage = String.format("%s (black) is in check", newGame.blackUsername());
+                ServerMessage notification = new NotificationMessage(checkMessage);
+                connections.broadcast("", notification);
+            }
+        } catch (Exception ex) {
+            throw new DataAccessException(500, ex.getMessage());
+        }
+    }
+
+    private boolean broadcastCheckmate(GameData newGame) throws DataAccessException {
+        try {
+            ChessGame game = newGame.game();
+            if (game.getTeamTurn().equals(ChessGame.TeamColor.WHITE) &&
+                    game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+                String checkmateMessage = String.format("%s (white) is in checkmate. " +
+                        "%s won!", newGame.whiteUsername(), newGame.blackUsername());
+                ServerMessage notification = new NotificationMessage(checkmateMessage);
+                connections.broadcast("", notification);
+                return true;
+            }
+
+            if (game.getTeamTurn().equals(ChessGame.TeamColor.BLACK) &&
+                    game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                String checkmateMessage = String.format("%s (black) is in checkmate. " +
+                        "%s won!", newGame.blackUsername(), newGame.whiteUsername());
+                ServerMessage notification = new NotificationMessage(checkmateMessage);
+                connections.broadcast("", notification);
+                return true;
+            }
+
+            return false;
+        } catch (Exception ex) {
+            throw new DataAccessException(500, ex.getMessage());
+        }
+    }
+
+    private boolean broadcastStalemate(GameData newGame) throws DataAccessException {
+        try {
+            ChessGame game = newGame.game();
+            if ((game.getTeamTurn().equals(ChessGame.TeamColor.WHITE) &&
+                    game.isInStalemate(ChessGame.TeamColor.WHITE)) ||
+                (game.getTeamTurn().equals(ChessGame.TeamColor.BLACK) &&
+                    game.isInStalemate(ChessGame.TeamColor.BLACK))) {
+                String stalemateMessage = "Game is in stalemate. No one won!";
+                ServerMessage notification = new NotificationMessage(stalemateMessage);
+                connections.broadcast("", notification);
+                return true;
+            }
+            return false;
+        } catch (Exception ex) {
+            throw new DataAccessException(500, ex.getMessage());
+        }
+
+    }
+
     private void leave(String username, UserGameCommand command) throws DataAccessException {
         try {
             GameData gameData = gameDB.getGame(command.getGameID());
-            String message = String.format("%s left the game", username);
             if (username.equals(gameData.whiteUsername())) {
                 GameData newGame = new GameData(gameData.gameID(), null,
                         gameData.blackUsername(), gameData.gameName(), gameData.game());
@@ -143,6 +235,7 @@ public class WebSocketHandler {
                 gameDB.updateGame(newGame);
             }
             connections.remove(username);
+            String message = String.format("%s left the game", username);
             ServerMessage notification = new NotificationMessage(message);
             connections.broadcast(username, notification);
         } catch (DataAccessException ex) {

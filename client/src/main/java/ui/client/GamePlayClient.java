@@ -88,9 +88,6 @@ public class GamePlayClient {
             ChessPosition startPosition = deserializePosition(params[0]);
             ChessPosition endPosition = deserializePosition(params[1]);
             ChessMove chessMove = new ChessMove(startPosition, endPosition);
-            if (!repl.game.game().validMoves(startPosition).contains(chessMove)) {
-                return "Not a valid move";
-            }
             ws.makeMove(repl.authToken, repl.gameID, chessMove);
             return String.format("Made move: %s -> %s", params[0], params[1]);
         } catch (IndexOutOfBoundsException ex) {
