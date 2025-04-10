@@ -40,7 +40,7 @@ public class WebSocketHandler {
 
             if (command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)) {
                 MakeMoveCommand moveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
-                make_move(session, moveCommand);
+                makeMove(session, moveCommand);
             }
 
             switch (command.getCommandType()) {
@@ -93,7 +93,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void make_move(Session session, MakeMoveCommand command) throws DataAccessException {
+    private void makeMove(Session session, MakeMoveCommand command) throws DataAccessException {
         try {
             AuthData authData = authDB.getAuth(command.getAuthToken());
             if (authData.authToken() == null) {

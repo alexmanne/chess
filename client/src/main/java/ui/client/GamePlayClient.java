@@ -180,21 +180,21 @@ public class GamePlayClient {
                 "- print possible commands";
     }
 
-    public String drawBlackBoard () {
-        StringBuilder builder = new StringBuilder();
+//    public String drawBlackBoard () {
+//        StringBuilder builder = new StringBuilder();
+//
+//
+//
+//        return builder.toString();
+//    }
 
-
-
-        return builder.toString();
-    }
-
-    public String drawWhiteBoard () {
-        StringBuilder builder = new StringBuilder();
-
-
-
-        return builder.toString();
-    }
+//    public String drawWhiteBoard () {
+//        StringBuilder builder = new StringBuilder();
+//
+//
+//
+//        return builder.toString();
+//    }
 
     // Creates the string to print a new board to the screen from white perspective
     public static String drawNewWhiteBoard() {
