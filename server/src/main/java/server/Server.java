@@ -31,7 +31,7 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        WebSocketHandler handler = new WebSocketHandler(authDB, gameDB);
+        WebSocketHandler handler = new WebSocketHandler(authDB, gameDB, gameService);
 
         Spark.webSocket("/ws", handler);
 

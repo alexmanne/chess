@@ -7,8 +7,8 @@ public class NotificationMessage extends ServerMessage {
     public ServerMessageType serverMessageType = ServerMessageType.NOTIFICATION;
     public String message;
 
-    public NotificationMessage(ServerMessageType type, String message) {
-        super(type);
+    public NotificationMessage(String message) {
+        super(serverMessageType);
         this.message = message;
     }
 }

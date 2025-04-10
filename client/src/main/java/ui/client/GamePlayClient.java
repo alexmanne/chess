@@ -69,6 +69,9 @@ public class GamePlayClient {
     }
 
     private String move(Repl repl, String[] params) throws DataAccessException {
+        if (repl.state.equals(State.OBSERVING)) {
+            return "You are observing and cannot make moves";
+        }
         String errorMessage = "Expected: <STARTING POSITION> <ENDING POSITION>. Example:\nd2 d4";
         if (params.length >= 1) {
             try {
@@ -85,6 +88,9 @@ public class GamePlayClient {
     }
 
     private String resign(Repl repl) throws DataAccessException {
+        if (repl.state.equals(State.OBSERVING)) {
+            return "You are observing and cannot resign.\nIf you meant to leave, type 'leave'";
+        }
         System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
         System.out.print("Resigning forfeits the game and cannot be undone.\n");
         System.out.print("Type 'resign' to confirm: ");
@@ -92,11 +98,6 @@ public class GamePlayClient {
         String line = scanner.nextLine();
         if (line.equals("resign")) {
             ws.resign(repl.authToken, repl.gameID);
-            repl.authToken = null;
-            repl.gameID = 0;
-            repl.state = State.LOGGEDIN;
-            repl.game = null;
-            isConnected = false;
             return String.format("%s resigned from the game", repl.username);
         } else {
             return "Did not resign";
