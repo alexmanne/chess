@@ -57,6 +57,8 @@ public class WebSocketHandler {
 //
     private void connect(Session session, UserGameCommand command) throws DataAccessException {
         try {
+            System.out.println("received connect message");
+
             AuthData authData = authDB.getAuth(command.getAuthToken());
             if (authData.authToken() == null) {
                 ErrorMessage errorMessage = new ErrorMessage("Error: unauthorized");
@@ -84,6 +86,7 @@ public class WebSocketHandler {
             connections.broadcast(username, gameData.gameID(), notification);
 
             ServerMessage loadGame = new LoadGame(gameData.game());
+            System.out.println("Sending loadgame message");
             session.getRemote().sendString(loadGame.toString());
         } catch (DataAccessException ex) {
             throw ex;
@@ -114,6 +117,10 @@ public class WebSocketHandler {
                 usernameColor = ChessGame.TeamColor.WHITE;
             } else {
                 usernameColor = null;
+            }
+
+            if (game.isOver) {
+                throw new DataAccessException(500, "Error: Game is over");
             }
 
             if (!validateMove(game, move, usernameColor)) {
@@ -157,9 +164,6 @@ public class WebSocketHandler {
 
     private boolean validateMove (ChessGame game, ChessMove move, ChessGame.TeamColor usernameColor) {
         if (!game.getBoard().getPiece(move.getStartPosition()).getTeamColor().equals(usernameColor)) {
-            return false;
-        }
-        if (game.isOver) {
             return false;
         }
         return game.validMoves(move.getStartPosition()).contains(move);

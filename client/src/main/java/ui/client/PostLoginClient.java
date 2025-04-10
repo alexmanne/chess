@@ -19,9 +19,11 @@ public class PostLoginClient {
 
     private final ServerFacade server;
     private ArrayList<ListOneGameResult> games;
+    private GamePlayClient gamePlayClient;
 
-    public PostLoginClient(ServerFacade server) {
+    public PostLoginClient(ServerFacade server, GamePlayClient gamePlayClient) {
         this.server = server;
+        this.gamePlayClient = gamePlayClient;
     }
 
     public String eval(String inputLine, Repl repl) {
@@ -91,9 +93,11 @@ public class PostLoginClient {
                 if (color.equals("WHITE")) {
                     repl.state = State.PLAYINGWHITE;
                     repl.boardRepl.setPlayerColor(ChessGame.TeamColor.WHITE);
+                    gamePlayClient.ws.connectChess(repl.authToken, repl.gameID);
                 } else {
                     repl.state = State.PLAYINGBLACK;
                     repl.boardRepl.setPlayerColor(ChessGame.TeamColor.BLACK);
+                    gamePlayClient.ws.connectChess(repl.authToken, repl.gameID);
                 }
                 return "joined game: " + givenId;
             } catch (IndexOutOfBoundsException ex){
@@ -114,6 +118,7 @@ public class PostLoginClient {
                 repl.gameID = games.get(givenId - 1).gameID();
                 repl.state = State.OBSERVING;
                 repl.boardRepl.setPlayerColor(null);
+                gamePlayClient.ws.connectChess(repl.authToken, repl.gameID);
                 return "observing game: "+ givenId;
             } catch (Exception ex) {
                 throw new DataAccessException(400, "game ID not recognized");

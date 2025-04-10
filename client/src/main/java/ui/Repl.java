@@ -29,8 +29,8 @@ public class Repl implements ServerMessageObserver {
     public Repl(int port) throws DataAccessException {
         ServerFacade server = new ServerFacade(port);
         preLoginClient = new PreLoginClient(server);
-        postLoginClient = new PostLoginClient(server);
         gamePlayClient = new GamePlayClient(this, port);
+        postLoginClient = new PostLoginClient(server, gamePlayClient);
         boardRepl = new ChessBoardRepl(null, null);
         state = State.LOGGEDOUT;
         authToken = "";
