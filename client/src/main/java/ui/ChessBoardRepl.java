@@ -1,11 +1,9 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import static ui.EscapeSequences.*;
@@ -43,6 +41,7 @@ public class ChessBoardRepl {
                 SET_TEXT_COLOR_WHITE + WHITE_QUEEN);
         this.converter.put(new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING),
                 SET_TEXT_COLOR_WHITE + WHITE_KING);
+        this.converter.put(null, EMPTY);
     }
 
     public ChessGame getGame() {
@@ -61,20 +60,21 @@ public class ChessBoardRepl {
         this.playerColor = playerColor;
     }
 
-    public String drawBoard() {
+    public String drawBoard(ChessGame game) {
         if (playerColor == ChessGame.TeamColor.WHITE) {
-            return drawWhiteBoard();
+            return drawWhiteBoard(game);
         } else if (playerColor == ChessGame.TeamColor.BLACK) {
-            return drawBlackBoard();
+            return drawBlackBoard(game);
         } else {
-            return drawWhiteBoard();
+            return drawWhiteBoard(game);
         }
     }
 
-    private String drawWhiteBoard() {
+    private String drawWhiteBoard(ChessGame game) {
         StringBuilder builder = new StringBuilder();
         ChessBoard board = game.getBoard();
-        builder.append(drawWhiteBoardHeader());
+        builder.append("\n");
+        builder.append(drawWhiteBoardHeader()).append("\n");
         for (int row = 8; row > 0; row--) {
             ArrayList<String> nextRow = new ArrayList<>();
             for (int col = 1; col < 9; col++) {
@@ -82,19 +82,20 @@ public class ChessBoardRepl {
                 nextRow.add(converter.get(board.getPiece(position)));
             }
             if (row % 2 == 0) {
-                builder.append(drawBlueRow(row, nextRow));
+                builder.append(drawBlueRow(row, nextRow)).append("\n");
             } else {
-                builder.append(drawGreenRow(row, nextRow));
+                builder.append(drawGreenRow(row, nextRow)).append("\n");
             }
         }
-        builder.append(drawWhiteBoardHeader());
+        builder.append(drawWhiteBoardHeader()).append("\n");
         return builder.toString();
     }
 
-    private String drawBlackBoard() {
+    private String drawBlackBoard(ChessGame game) {
         StringBuilder builder = new StringBuilder();
         ChessBoard board = game.getBoard();
-        builder.append(drawWhiteBoardHeader());
+        builder.append("\n");
+        builder.append(drawBlackBoardHeader()).append("\n");
         for (int row = 1; row < 9; row++) {
             ArrayList<String> nextRow = new ArrayList<>();
             for (int col = 8; col > 0; col--) {
@@ -102,19 +103,82 @@ public class ChessBoardRepl {
                 nextRow.add(converter.get(board.getPiece(position)));
             }
             if (row % 2 == 0) {
-                builder.append(drawGreenRow(row, nextRow));
+                builder.append(drawGreenRow(row, nextRow)).append("\n");
             } else {
-                builder.append(drawBlueRow(row, nextRow));
+                builder.append(drawBlueRow(row, nextRow)).append("\n");
             }
         }
-        builder.append(drawWhiteBoardHeader());
+        builder.append(drawBlackBoardHeader()).append("\n");
         return builder.toString();
     }
 
 
-    public String highlight(ChessPosition chessPosition) {
-        return null;
+    public String highlight(ChessGame game, ChessPosition chessPosition) {
+        Collection<ChessMove> validMoves= game.validMoves(chessPosition);
+        Collection<ChessPosition> validPositions = new ArrayList<>();
+
+        for (ChessMove move : validMoves) {
+            validPositions.add(move.getEndPosition());
+        }
+        if (playerColor == ChessGame.TeamColor.WHITE) {
+            return highlightWhiteBoard(game, validPositions);
+        } else if (playerColor == ChessGame.TeamColor.BLACK) {
+            return highlightBlackBoard(game, validPositions);
+        } else {
+            return highlightWhiteBoard(game, validPositions);
+        }
     }
+
+    private String highlightWhiteBoard(ChessGame game, Collection<ChessPosition> validEndPositions) {
+        StringBuilder builder = new StringBuilder();
+        ChessBoard board = game.getBoard();
+        builder.append("\n");
+        builder.append(drawWhiteBoardHeader()).append("\n");
+        for (int row = 8; row > 0; row--) {
+            ArrayList<String> nextRow = new ArrayList<>();
+            for (int col = 1; col < 9; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                String stringFiller = converter.get(board.getPiece(position));
+                if (validEndPositions.contains(position)) {
+                    stringFiller = SET_BG_COLOR_YELLOW + stringFiller;
+                }
+                nextRow.add(stringFiller);
+            }
+            if (row % 2 == 0) {
+                builder.append(drawBlueRow(row, nextRow)).append("\n");
+            } else {
+                builder.append(drawGreenRow(row, nextRow)).append("\n");
+            }
+        }
+        builder.append(drawWhiteBoardHeader()).append("\n");
+        return builder.toString();
+    }
+
+    private String highlightBlackBoard(ChessGame game, Collection<ChessPosition> validEndPositions) {
+        StringBuilder builder = new StringBuilder();
+        ChessBoard board = game.getBoard();
+        builder.append("\n");
+        builder.append(drawBlackBoardHeader()).append("\n");
+        for (int row = 1; row < 9; row++) {
+            ArrayList<String> nextRow = new ArrayList<>();
+            for (int col = 8; col > 0; col--) {
+                ChessPosition position = new ChessPosition(row, col);
+                String stringFiller = converter.get(board.getPiece(position));
+                if (validEndPositions.contains(position)) {
+                    stringFiller = SET_BG_COLOR_YELLOW + stringFiller;
+                }
+                nextRow.add(stringFiller);
+            }
+            if (row % 2 == 0) {
+                builder.append(drawGreenRow(row, nextRow)).append("\n");
+            } else {
+                builder.append(drawBlueRow(row, nextRow)).append("\n");
+            }
+        }
+        builder.append(drawBlackBoardHeader()).append("\n");
+        return builder.toString();
+    }
+
 
     private static String drawBlueRow(int rowNum, ArrayList<String> fill) {
         return SET_BG_COLOR_DARK_GREY + SET_TEXT_COLOR_WHITE +

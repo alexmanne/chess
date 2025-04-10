@@ -148,7 +148,7 @@ public class Repl implements ServerMessageObserver {
     void loadGame(LoadGame serverMessage) {
         this.game = serverMessage.game;
         boardRepl.setGame(serverMessage.game);
-        String board = boardRepl.drawBoard();
+        String board = boardRepl.drawBoard(serverMessage.game);
         System.out.print(board);
         printGamePlayPrompt();
     }

@@ -34,6 +34,7 @@ public class GamePlayClient {
             if (!isConnected) {
                 ws.connectChess(repl.authToken, repl.gameID);
                 isConnected = true;
+                redraw(repl);
             }
             var tokens = inputLine.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -53,7 +54,7 @@ public class GamePlayClient {
     }
 
     private String redraw(Repl repl) {
-        return repl.boardRepl.drawBoard();
+        return repl.boardRepl.drawBoard(repl.game);
     }
 
     private String leave(Repl repl) throws DataAccessException {
@@ -108,13 +109,12 @@ public class GamePlayClient {
     }
 
     private String highlight(Repl repl, String[] params) throws DataAccessException {
-        String errorMessage = "Expected: <POSITION>. Example:\nd2";
+        String errorMessage = "Expected: highlight <POSITION>. Example:\nhighlight d2";
         if (params.length != 1) {
             throw new DataAccessException(400, errorMessage);
         }
         ChessPosition position = deserializePosition(params[0]);
-        repl.boardRepl.highlight(position);
-        return null;
+        return repl.boardRepl.highlight(repl.game, position);
     }
 
     private ChessPosition deserializePosition(String stringPosition) throws DataAccessException {
