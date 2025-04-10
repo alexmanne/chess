@@ -83,7 +83,7 @@ public class WebSocketHandler {
             ServerMessage notification = new NotificationMessage(message);
             connections.broadcast(username, gameData.gameID(), notification);
 
-            ServerMessage loadGame = new LoadGame(gameData.game(), false);
+            ServerMessage loadGame = new LoadGame(gameData.game());
             connections.connections.get(username).send(loadGame.toString());
         } catch (DataAccessException ex) {
             throw ex;
@@ -140,7 +140,7 @@ public class WebSocketHandler {
             boolean gameInStalemate = broadcastStalemate(newGame);
             boolean gameOver = gameInStalemate || gameInCheckmate;
 
-            ServerMessage loadGame = new LoadGame(game, gameOver);
+            ServerMessage loadGame = new LoadGame(game);
             connections.broadcast(null, gameData.gameID(), loadGame);
 
             if (!gameOver) {

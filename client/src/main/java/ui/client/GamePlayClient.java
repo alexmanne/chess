@@ -106,6 +106,12 @@ public class GamePlayClient {
     }
 
     private String highlight(Repl repl, String[] params) throws DataAccessException {
+        String errorMessage = "Expected: <POSITION>. Example:\nd2";
+        if (params.length != 1) {
+            throw new DataAccessException(400, errorMessage);
+        }
+        ChessPosition position = deserializePosition(params[0]);
+        repl.boardRepl.highlight(position);
         return null;
     }
 

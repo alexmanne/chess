@@ -43,11 +43,27 @@ public class ChessBoardRepl {
                 SET_TEXT_COLOR_WHITE + WHITE_KING);
     }
 
-//    public String drawBoard() {
-//        return null;
-//    }
+    public ChessGame getGame() {
+        return game;
+    }
 
-//    public String highlight(ChessPosition chessPosition) {
-//        return null;
-//    }
+    public void setGame(ChessGame game) {
+        this.game = game;
+    }
+
+    public ChessGame.TeamColor getPlayerColor() {
+        return playerColor;
+    }
+
+    public void setPlayerColor(ChessGame.TeamColor playerColor) {
+        this.playerColor = playerColor;
+    }
+
+    public String drawBoard() {
+        return null;
+    }
+
+    public String highlight(ChessPosition chessPosition) {
+        return null;
+    }
 }

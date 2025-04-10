@@ -19,6 +19,7 @@ public class Repl implements ServerMessageObserver {
     private final PreLoginClient preLoginClient;
     private final PostLoginClient postLoginClient;
     private final GamePlayClient gamePlayClient;
+    public final ChessBoardRepl boardRepl;
     public String authToken;
     public String username;
     public int gameID;
@@ -30,6 +31,7 @@ public class Repl implements ServerMessageObserver {
         preLoginClient = new PreLoginClient(server);
         postLoginClient = new PostLoginClient(server);
         gamePlayClient = new GamePlayClient(this, port);
+        boardRepl = new ChessBoardRepl(null, null);
         state = State.LOGGEDOUT;
         authToken = "";
     }
@@ -135,6 +137,8 @@ public class Repl implements ServerMessageObserver {
 
     void displayError(ErrorMessage serverMessage) {}
 
-    void loadGame(LoadGame serverMessage) {}
+    void loadGame(LoadGame serverMessage) {
+        boardRepl.drawBoard();
+    }
 
 }
