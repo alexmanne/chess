@@ -29,12 +29,10 @@ public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
     private final AuthDao authDB;
     private final GameDao gameDB;
-    private final GameService gameService;
 
-    public WebSocketHandler(AuthDao authDB, GameDao gameDB, GameService gameService) {
+    public WebSocketHandler(AuthDao authDB, GameDao gameDB) {
         this.authDB = authDB;
         this.gameDB = gameDB;
-        this.gameService = gameService;
     }
 //
     @OnWebSocketMessage
@@ -78,7 +76,7 @@ public class WebSocketHandler {
                 message = String.format("%s joined the game to observe", username);
             }
             ServerMessage notification = new NotificationMessage(message);
-            connections.broadcast(null, notification);
+            connections.broadcast("", notification);
         } catch (DataAccessException ex) {
             throw ex;
         }
@@ -102,7 +100,9 @@ public class WebSocketHandler {
             String endPosition = serializePosition(move.getEndPosition());
             String message = String.format("%s moved %s -> %s", username, startPosition, endPosition);
             ServerMessage notification = new NotificationMessage(message);
+            ServerMessage loadGame = new LoadGame(game);
             connections.broadcast(username, notification);
+            connections.broadcast("", loadGame);
         } catch (DataAccessException ex) {
             throw ex;
         }
@@ -142,6 +142,7 @@ public class WebSocketHandler {
                         null, gameData.gameName(), gameData.game());
                 gameDB.updateGame(newGame);
             }
+            connections.remove(username);
             ServerMessage notification = new NotificationMessage(message);
             connections.broadcast(username, notification);
         } catch (DataAccessException ex) {
