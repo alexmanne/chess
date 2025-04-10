@@ -92,9 +92,6 @@ public class GamePlayClient {
     }
 
     private String resign(Repl repl) throws DataAccessException {
-        if (repl.state.equals(State.OBSERVING)) {
-            return "You are observing and cannot resign.\nIf you meant to leave, type 'leave'";
-        }
         System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE);
         System.out.print("Resigning forfeits the game and cannot be undone.\n");
         System.out.print("Type 'resign' to confirm: ");

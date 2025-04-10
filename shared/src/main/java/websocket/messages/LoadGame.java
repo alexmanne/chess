@@ -11,7 +11,6 @@ public class LoadGame extends ServerMessage {
     public LoadGame(ChessGame game, boolean gameOver) {
         super(ServerMessageType.LOAD_GAME);
         this.game = game;
-
         this.gameOver = gameOver;
     }
 

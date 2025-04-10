@@ -12,6 +12,7 @@ public class ChessGame {
 
     private ChessBoard board;
     private TeamColor teamTurn;
+    public boolean isOver;
 
     public ChessGame() {
         setBoard(new ChessBoard());
