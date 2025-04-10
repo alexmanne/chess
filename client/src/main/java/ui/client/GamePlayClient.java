@@ -71,20 +71,31 @@ public class GamePlayClient {
     private String move(Repl repl, String[] params) throws DataAccessException {
         if (repl.state.equals(State.OBSERVING)) {
             return "You are observing and cannot make moves";
-        }
-        String errorMessage = "Expected: <STARTING POSITION> <ENDING POSITION>. Example:\nd2 d4";
-        if (params.length >= 1) {
-            try {
-                ChessPosition startPosition = serializePosition(params[0]);
-                ChessPosition endPosition = serializePosition(params[1]);
-                ChessMove chessMove = new ChessMove(startPosition, endPosition);
-                ws.makeMove(repl.authToken, repl.gameID, chessMove);
-                return String.format("Made move: %s -> %s", params[0], params[1]);
-            } catch (IndexOutOfBoundsException ex) {
-                throw new DataAccessException(400, errorMessage);
+        } else if (repl.state.equals(State.PLAYINGBLACK)) {
+            if (repl.game.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)) {
+                return "Not your turn";
+            }
+        } else if (repl.state.equals(State.PLAYINGWHITE)) {
+            if (repl.game.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)) {
+                return "Not your turn";
             }
         }
-        throw new DataAccessException(400, errorMessage);
+        String errorMessage = "Expected: <STARTING POSITION> <ENDING POSITION>. Example:\nd2 d4";
+        if (params.length != 2) {
+            throw new DataAccessException(400, errorMessage);
+        }
+        try {
+            ChessPosition startPosition = deserializePosition(params[0]);
+            ChessPosition endPosition = deserializePosition(params[1]);
+            ChessMove chessMove = new ChessMove(startPosition, endPosition);
+            if (!repl.game.game().validMoves(startPosition).contains(chessMove)) {
+                return "Not a valid move";
+            }
+            ws.makeMove(repl.authToken, repl.gameID, chessMove);
+            return String.format("Made move: %s -> %s", params[0], params[1]);
+        } catch (IndexOutOfBoundsException ex) {
+            throw new DataAccessException(400, errorMessage);
+        }
     }
 
     private String resign(Repl repl) throws DataAccessException {
@@ -108,7 +119,7 @@ public class GamePlayClient {
         return null;
     }
 
-    private ChessPosition serializePosition(String stringPosition) throws DataAccessException {
+    private ChessPosition deserializePosition(String stringPosition) throws DataAccessException {
         String errorMessage = "Expected position is a letter than a number. Example:\nd2";
         ArrayList<String> viableLetters = new ArrayList<>(Arrays.asList("a", "b", "c", "d", "e", "f", "g", "h"));
         ArrayList<String> viableNumbers = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));

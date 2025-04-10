@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import exception.DataAccessException;
+import model.GameData;
 import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
@@ -19,7 +20,7 @@ public class Repl implements ServerMessageObserver {
     public String authToken;
     public String username;
     public int gameID;
-    public ChessGame game;
+    public GameData game;
     public State state;
 
     public Repl(int port) throws DataAccessException {

@@ -8,7 +8,7 @@ public class MakeMoveCommand extends UserGameCommand {
     private final CommandType commandType = CommandType.MAKE_MOVE;
     private final String authToken;
     private final Integer gameID;
-    private ChessMove move;
+    private final ChessMove move;
 
     public MakeMoveCommand(String authToken, Integer gameID, ChessMove move) {
         super(CommandType.MAKE_MOVE, authToken, gameID);
@@ -19,5 +19,9 @@ public class MakeMoveCommand extends UserGameCommand {
 
     public String toString() {
         return new Gson().toJson(this);
+    }
+
+    public ChessMove getMove() {
+        return move;
     }
 }
