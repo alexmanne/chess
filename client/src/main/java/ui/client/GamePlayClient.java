@@ -2,6 +2,7 @@ package ui.client;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import exception.DataAccessException;
 import ui.EscapeSequences;
@@ -80,6 +81,7 @@ public class GamePlayClient {
             ChessPosition startPosition = deserializePosition(params[0]);
             ChessPosition endPosition = deserializePosition(params[1]);
             ChessMove chessMove = new ChessMove(startPosition, endPosition);
+            chessMove = handlePromotion(repl.game, chessMove);
             ws.makeMove(repl.authToken, repl.gameID, chessMove);
             return String.format("Move: %s -> %s", params[0], params[1]);
         } catch (IndexOutOfBoundsException ex) {
@@ -87,6 +89,39 @@ public class GamePlayClient {
         } catch (NullPointerException ex) {
             throw new DataAccessException(500, "Please try again");
         }
+    }
+
+    private ChessMove handlePromotion(ChessGame game, ChessMove move) {
+        String validPieces = "Valid pieces are: rook, knight, bishop, queen\n";
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece piece = game.getBoard().getPiece(startPosition);
+        if (piece.getPieceType() != ChessPiece.PieceType.PAWN) {
+            return move;
+        }
+        if ((piece.getTeamColor() == ChessGame.TeamColor.WHITE && endPosition.getRow() == 8) ||
+                (piece.getTeamColor() == ChessGame.TeamColor.BLACK && endPosition.getRow() == 1)) {
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                System.out.print("\n" + "SELECT PROMOTION PIECE >>> ");
+                String line = scanner.nextLine();
+                if (line == null) {
+                    System.out.print(validPieces);
+                }
+                else if (line.equalsIgnoreCase("rook")) {
+                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.ROOK);
+                } else if (line.equalsIgnoreCase("knight")) {
+                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.KNIGHT);
+                } else if (line.equalsIgnoreCase("bishop")) {
+                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.BISHOP);
+                } else if (line.equalsIgnoreCase("queen")) {
+                    return new ChessMove(startPosition, endPosition, ChessPiece.PieceType.QUEEN);
+                } else {
+                    System.out.print(validPieces);
+                }
+            }
+        }
+        return move;
     }
 
     private String resign(Repl repl) throws DataAccessException {
