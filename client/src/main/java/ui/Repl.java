@@ -1,6 +1,5 @@
 package ui;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.DataAccessException;
 import model.GameData;
@@ -8,8 +7,6 @@ import ui.client.GamePlayClient;
 import ui.client.PostLoginClient;
 import ui.client.PreLoginClient;
 import websocket.ServerMessageObserver;
-import websocket.WebSocketFacade;
-import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.NotificationMessage;

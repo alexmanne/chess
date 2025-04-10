@@ -5,24 +5,21 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataaccess.AuthDao;
-import dataaccess.DatabaseManager;
 import dataaccess.GameDao;
 import exception.DataAccessException;
 import model.AuthData;
 import model.GameData;
-import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import service.GameService;
-import websocket.commands.*;
-import websocket.messages.*;
+import websocket.commands.MakeMoveCommand;
+import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGame;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Timer;
 
 @WebSocket
 public class WebSocketHandler {

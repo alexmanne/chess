@@ -5,12 +5,10 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import exception.DataAccessException;
 import ui.EscapeSequences;
-import ui.ServerFacade;
 import ui.Repl;
 import ui.State;
 import websocket.ServerMessageObserver;
 import websocket.WebSocketFacade;
-import websocket.messages.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
